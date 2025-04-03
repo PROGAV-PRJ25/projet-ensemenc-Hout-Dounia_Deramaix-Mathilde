@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\deram\\.nuget\\packages\\": {}
+    "/Users/douniaoriane/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\deram\\OneDrive\\Bureau\\ENSC\\A1\\S6\\JeuProjet\\projet-ensemenc-Hout-Dounia_Deramaix-Mathilde\\JeuPotager\\JeuPotager.csproj",
+      "projectUniqueName": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
       "projectName": "JeuPotager",
-      "projectPath": "C:\\Users\\deram\\OneDrive\\Bureau\\ENSC\\A1\\S6\\JeuProjet\\projet-ensemenc-Hout-Dounia_Deramaix-Mathilde\\JeuPotager\\JeuPotager.csproj",
-      "packagesPath": "C:\\Users\\deram\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\deram\\OneDrive\\Bureau\\ENSC\\A1\\S6\\JeuProjet\\projet-ensemenc-Hout-Dounia_Deramaix-Mathilde\\JeuPotager\\obj\\",
+      "projectPath": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
+      "packagesPath": "/Users/douniaoriane/.nuget/packages/",
+      "outputPath": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\deram\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/douniaoriane/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -64,7 +64,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
