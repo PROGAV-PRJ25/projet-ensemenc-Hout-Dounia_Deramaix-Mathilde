@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JeuPotager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d8f79a193e9cf04bf88a6099a298e45ae865e4c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+805c4c33085fc35299bd5a14dc4af70ebfe614ed")]
 [assembly: System.Reflection.AssemblyProductAttribute("JeuPotager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JeuPotager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

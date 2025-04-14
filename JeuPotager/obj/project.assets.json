@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
+      "projectUniqueName": "/Users/douniaoriane/Desktop/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
       "projectName": "JeuPotager",
-      "projectPath": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
+      "projectPath": "/Users/douniaoriane/Desktop/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/JeuPotager.csproj",
       "packagesPath": "/Users/douniaoriane/.nuget/packages/",
-      "outputPath": "/Users/douniaoriane/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/obj/",
+      "outputPath": "/Users/douniaoriane/Desktop/projet-ensemenc-Hout-Dounia_Deramaix-Mathilde/JeuPotager/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/douniaoriane/.nuget/NuGet/NuGet.Config"
