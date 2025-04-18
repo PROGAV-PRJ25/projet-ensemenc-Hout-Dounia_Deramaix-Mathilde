@@ -7,6 +7,7 @@ public class Terrain{
     public string? Humidite {get; set; }
     public string? Ensoleillement{get; set; }
     public int CapaciteMaxPlante {get; set; }
+    public string? PlanteCultivee {get; set; }
 
     public Terrain( string nomTerrain, double superficieTerrain, string typeSol, string humidite, string ensoleillement, int capaciteMax)
     {
