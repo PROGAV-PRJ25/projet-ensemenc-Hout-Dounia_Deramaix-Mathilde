@@ -1,4 +1,4 @@
-public abstract class Plante
+public class Plante
 {
     public string? NomPlante { get; set; }
     public string? Nature { get; set; }
@@ -17,7 +17,19 @@ public abstract class Plante
     public bool EstSemee { get; private set; } = false;
     public bool EstArrosee { get; private set; } = false;
     public int JoursCroissance { get; private set; } = 0;
-    public bool EstRecoltable => JoursCroissance >= EsperanceDeVie / 2;
+
+    public string CroissanceVerticale { get; private set; } = "";
+    public string CroissanceHorizontale { get; private set; } = "";
+
+    public bool EstRecoltable
+    {
+        get
+        {
+            // Vérifie si la plante a eu une croissance suffisante et que les conditions sont respectées
+            return JoursCroissance >= 7;  // on peut modifier pazr ex : 7 jours de croissance pour être récoltable
+        }
+    }
+
 
     public Plante(string nomPlante, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, string maladie, int esperanceVie, int productionmax)
     {
@@ -35,7 +47,8 @@ public abstract class Plante
         EsperanceDeVie = esperanceVie;
         ProductionMax = productionmax;
     }
-    public virtual void Semer()
+
+    public void Semer()
     {
         if (!EstSemee)
         {
@@ -48,7 +61,7 @@ public abstract class Plante
         }
     }
 
-    public virtual void Arroser()
+    public void Arroser()
     {
         if (EstSemee)
         {
@@ -61,13 +74,33 @@ public abstract class Plante
         }
     }
 
-    public virtual void Croissance()
+    // Méthode pour vérifier si les conditions sont respectées
+    private bool ConditionsRespectees(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle)
+    {
+        int conditionsOk = 0;
+
+        if (BesoinEau == humiditeTerrain) conditionsOk++;
+        if (BesoinLumiere == ensoleillement) conditionsOk++;
+        if (BesoinNutriment == richesseSol) conditionsOk++;
+        if (TemperaturePreferee == temperatureActuelle) conditionsOk++;
+
+        // Retourne vrai si 50% des conditions sont respectées
+        return conditionsOk >= 2;
+    }
+
+    public void Croissance(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle)
     {
         if (EstSemee && EstArrosee)
         {
-            JoursCroissance++;
-            EstArrosee = false; // On considère qu’il faut arroser chaque jour
-            Console.WriteLine($"{NomPlante} a grandi. Jours de croissance : {JoursCroissance}.");
+            if (ConditionsRespectees(humiditeTerrain, ensoleillement, richesseSol, temperatureActuelle))
+            {
+                JoursCroissance++;
+                Console.WriteLine($"{NomPlante} a grandi. Jours de croissance : {JoursCroissance}");
+            }
+            else
+            {
+                Console.WriteLine($"{NomPlante} ne peut pas croître, les conditions ne sont pas respectées.");
+            }
         }
         else if (EstSemee)
         {
@@ -75,19 +108,20 @@ public abstract class Plante
         }
     }
 
-    public virtual void Recolter()
+    // Méthode pour récolter la plante
+    public void Recolter()
     {
         if (EstRecoltable)
         {
             Console.WriteLine($"Récolte de {ProductionMax} {NomPlante}(s) !");
             EstSemee = false;
             JoursCroissance = 0;
+            CroissanceVerticale = "";
+            CroissanceHorizontale = "";
         }
         else
         {
             Console.WriteLine($"{NomPlante} n’est pas encore prête à être récoltée.");
         }
     }
-
-
 }
