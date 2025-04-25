@@ -67,7 +67,7 @@ public abstract class Plante
         {
             JoursCroissance++;
             EstArrosee = false; // On considère qu’il faut arroser chaque jour
-            Console.WriteLine($"{NomPlante} a grandi. Jours de croissance : {JoursDeCroissance}.");
+            Console.WriteLine($"{NomPlante} a grandi. Jours de croissance : {JoursCroissance}.");
         }
         else if (EstSemee)
         {
