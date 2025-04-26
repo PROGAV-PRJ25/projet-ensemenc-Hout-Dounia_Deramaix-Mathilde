@@ -37,6 +37,6 @@ public class Webcam
 
 
 }
-// a ajouter dans le programme principal 
+//ensuite: a ajouter dans le programme principal 
 // webcam.SurveillerMeteo(meteo);
 //webcam.SurveillerIntrus();
