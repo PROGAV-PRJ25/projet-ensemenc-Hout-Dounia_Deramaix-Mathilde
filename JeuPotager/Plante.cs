@@ -20,6 +20,8 @@ public class Plante
 
     public string CroissanceVerticale { get; private set; } = "";
     public string CroissanceHorizontale { get; private set; } = "";
+    public List<string> SaisonsDeSemis { get; set; }
+
 
     public bool EstRecoltable
     {
@@ -31,7 +33,7 @@ public class Plante
     }
 
 
-    public Plante(string nomPlante, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, string maladie, int esperanceVie, int productionmax)
+    public Plante(string nomPlante, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, string maladie, int esperanceVie, int productionmax, List<string> saisonsDeSemis)
     {
         NomPlante = nomPlante;
         Nature = nature;
@@ -46,6 +48,7 @@ public class Plante
         Maladie = maladie;
         EsperanceDeVie = esperanceVie;
         ProductionMax = productionmax;
+        SaisonsDeSemis = saisonsDeSemis;
     }
 
     public void Semer()
@@ -124,4 +127,22 @@ public class Plante
             Console.WriteLine($"{NomPlante} n’est pas encore prête à être récoltée.");
         }
     }
+    public double ProbabiliteContamination()
+    {
+        Random random = new Random();
+        return random.NextDouble();  // génère une valeur entre 0 et 1
+    }
+
 }
+
+
+// a ajouter au prgrm principal ensuite 
+// double probabilité = ProbabiliteContamination();
+//if (probabilité < 0.5)  // Si la probabilité est inférieure à 0.5
+//{
+//Console.WriteLine("La plante a été contaminée !");
+//}
+//else
+//{
+//   Console.WriteLine("La plante n'a pas été contaminée.");
+//}
