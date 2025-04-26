@@ -136,7 +136,7 @@ public class Plante
 }
 
 
-// a ajouter au prgrm principal ensuite 
+// a ajouter au prgrm principal pour test
 // double probabilité = ProbabiliteContamination();
 //if (probabilité < 0.5)  // Si la probabilité est inférieure à 0.5
 //{
