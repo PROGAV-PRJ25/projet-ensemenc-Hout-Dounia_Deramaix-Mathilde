@@ -34,8 +34,11 @@ public class Webcam
         }
     }
 
+    public void AfficherInfoWebcam()
+    {
+        Console.WriteLine();
+        Console.WriteLine("Information transmise par la webcam pendant le mois :");
+        Console.WriteLine();
+    }
 
 }
-//ensuite: a ajouter dans le programme principal 
-// webcam.SurveillerMeteo(meteo);
-//webcam.SurveillerIntrus();
