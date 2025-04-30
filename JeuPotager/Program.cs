@@ -190,17 +190,24 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
     toucheTerrain = Console.ReadKey();
 }
 
+// definition de la meteo pour chaque terrain 
+Meteo meteoLangueDeChat = new Meteo(20, "Humide", 5, "temps orageux");
+Meteo meteoDragibus = new Meteo(22, "Modéré", 2, "ensoleillé");
+Meteo? meteoTerrainActuel = null;
+
 if (toucheTerrain.KeyChar == '1')
 {
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain acidulé (semis : Langue de chat acidulée)");
     appelationTerrain = "Terrain de langue de chat";
+    meteoTerrainActuel = meteoLangueDeChat;
 
 }
 if (toucheTerrain.KeyChar == '2')
 {
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain sucré (semis : Dragibus)");
+    meteoTerrainActuel = meteoDragibus;
 }
 
 // Début du jeu 
@@ -214,6 +221,22 @@ do
     Console.WriteLine();
     Console.WriteLine(" Vos semis ont été plantés !");
     Console.WriteLine("Bon courage !");
+    // Affichage de la météo pour le terrain actuel
+    Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
+    if (meteoTerrainActuel != null)
+    {
+        Console.WriteLine($"Température: {meteoTerrainActuel.Temperature}°C");
+        Console.WriteLine($"Humidité: {meteoTerrainActuel.Humidite}");
+        Console.WriteLine($"Précipitations: {meteoTerrainActuel.TauxPrécipitations} mm");
+        Console.WriteLine($"Type de météo: {meteoTerrainActuel.TypeMeteo}");
+        webcam.SurveillerMeteo(meteoTerrainActuel);
+    }
+
+
+
+    webcam.SurveillerIntrus();
+    webcam.AfficherInfoWebcam();
+
     // suite du jeu
     PasserAuMoisSuivant();
     compteurMois++;
@@ -233,39 +256,46 @@ while ((compteurMois > 1) && (appelationTerrain == "Terrain de langue de chat") 
     }
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
-    Meteo meteoTerrainAcidule = new Meteo(20, "Humide", 0, "temps orageux");
-    webcam.AfficherInfoWebcam();
-    webcam.SurveillerMeteo(meteoTerrainAcidule);
+    //Affichage meteo : 
+    Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
+    if (meteoTerrainActuel != null)
+    {
+        Console.WriteLine($"Température: {meteoTerrainActuel.Temperature}°C");
+        Console.WriteLine($"Humidité: {meteoTerrainActuel.Humidite}");
+        Console.WriteLine($"Précipitations: {meteoTerrainActuel.TauxPrécipitations} mm");
+        Console.WriteLine($"Type de météo: {meteoTerrainActuel.TypeMeteo}");
+        webcam.SurveillerMeteo(meteoTerrainActuel);
+    }
+
+
     webcam.SurveillerIntrus();
-
-
-    compteurMois++;
-    PasserAuMoisSuivant();
-
-}
-
-//coder jeu
-/* if (touchePartie.Key == ConsoleKey.Enter)
-{
-    plantesMortes = true;
-}
-else if (touchePartie.Key == ConsoleKey.Spacebar)
-{
-    partiefinie = true;
-}
-*/
+    webcam.AfficherInfoWebcam();
 
 
 
-//Fin de la partie
-if (plantesMortes == true)
-{
-    Console.WriteLine();
-    Console.WriteLine("PERDU !");
-}
-else if (partiefinie == true)
-{
-    Console.WriteLine();
-    Console.WriteLine("Dommage vous étiez en bonne voie !");
+    //coder jeu
+    /* if (touchePartie.Key == ConsoleKey.Enter)
+    {
+        plantesMortes = true;
+    }
+    else if (touchePartie.Key == ConsoleKey.Spacebar)
+    {
+        partiefinie = true;
+    }
+    */
+
+
+
+    //Fin de la partie
+    if (plantesMortes == true)
+    {
+        Console.WriteLine();
+        Console.WriteLine("PERDU !");
+    }
+    else if (partiefinie == true)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Dommage vous étiez en bonne voie !");
+    }
 }
 

@@ -16,10 +16,7 @@ public class Webcam
     {
         IntemperieDetectee = meteo.EstIntemperie;
 
-        if (IntemperieDetectee)
-        {
-            Console.WriteLine("intempéries détectées dans votre jardin");
-        }
+
     }
 
     // Génère aléatoirement la présence d'un intrus
@@ -28,17 +25,24 @@ public class Webcam
         int chance = 10; // 10% de chance
         IntrusDetecte = random.Next(1, 101) <= chance;
 
-        if (IntrusDetecte)
-        {
-            Console.WriteLine("intrus repéré dans le potager !");
-        }
+
     }
+
 
     public void AfficherInfoWebcam()
     {
         Console.WriteLine();
         Console.WriteLine("Information transmise par la webcam pendant le mois :");
         Console.WriteLine();
+
+        if (IntrusDetecte)
+            Console.WriteLine("intrus repéré dans le potager !");
+        if (IntemperieDetectee)
+            Console.WriteLine("intempéries détectées dans votre jardin");
+
+        if (!IntrusDetecte && !IntemperieDetectee)
+            Console.WriteLine(" Aucune urgence détectée par la webcam ce mois-ci");
     }
 
 }
+
