@@ -21,6 +21,8 @@ public class Plante
     public string CroissanceVerticale { get; private set; } = "";
     public string CroissanceHorizontale { get; private set; } = "";
     public List<string> SaisonsDeSemis { get; set; }
+    public int SemisDisponibles { get; private set; }
+    public bool EstMorte { get; private set; }
 
 
     public bool EstRecoltable
@@ -49,6 +51,8 @@ public class Plante
         EsperanceDeVie = esperanceVie;
         ProductionMax = productionmax;
         SaisonsDeSemis = saisonsDeSemis;
+        SemisDisponibles = 0;
+        EstMorte = false;
     }
 
     public void Semer()
@@ -117,14 +121,16 @@ public class Plante
         if (EstRecoltable)
         {
             Console.WriteLine($"Récolte de {ProductionMax} {NomPlante}(s) !");
+            SemisDisponibles += 2;  // Ajoute 2 semis à chaque récolte
+            Console.WriteLine($"{SemisDisponibles} semis supplémentaires sont disponibles");
+
             EstSemee = false;
             JoursCroissance = 0;
-            CroissanceVerticale = "";
-            CroissanceHorizontale = "";
+
         }
         else
         {
-            Console.WriteLine($"{NomPlante} n’est pas encore prête à être récoltée.");
+            Console.WriteLine($"{NomPlante} n’est pas encore prête à être récoltée");
         }
     }
     public double ProbabiliteContamination()
