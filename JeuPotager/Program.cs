@@ -221,6 +221,7 @@ do
     Console.WriteLine();
     Console.WriteLine(" Vos semis ont été plantés !");
     Console.WriteLine("Bon courage !");
+    Console.WriteLine();
     // Affichage de la météo pour le terrain actuel
     Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
     if (meteoTerrainActuel != null)
