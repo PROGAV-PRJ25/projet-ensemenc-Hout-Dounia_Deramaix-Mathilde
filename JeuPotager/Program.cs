@@ -1,4 +1,5 @@
 ﻿
+
 string[] bienvenueENSC = {
             "  ____  _                                                         ______ _   _  _____                            _____   _ ",
             " |  _ \\(_)                                                       |  ____| \\ | |/ ____|                          / ____| | |",
@@ -49,7 +50,7 @@ string[] langueDeChat = {
             "|                                 |",
             "|        1. Terrain Acidulé       |",
             "|                                 |",
-            "|      semis : Langue de chat     |",
+            "|      Semis : Langue de chat     |",
             "|_________________________________|",
         };
 
@@ -65,7 +66,7 @@ string[] dragibus = {
             "|                                 |",
             "|        2. Terrain Sucré         |",
             "|                                 |",
-            "|        semis : Dragibus         |",
+            "|        Semis : Dragibus         |",
             "|_________________________________|",
         };
 
@@ -96,14 +97,13 @@ string[] moisSuivant = {
 
 //############################################################################################################
 
-Webcam webcam = new Webcam();
-string appelationPays = "";
-string appelationTerrain = "";
 int tailleCartePays = 11;
 int tailleCarteTerrain = 13;
 bool plantesMortes = false;
 bool partiefinie = false;
 int compteurMois = 0;
+string paysSelectionne = "";
+string terrainSelectionne = "";
 
 void PasserAuMoisSuivant()
 {
@@ -157,23 +157,12 @@ while (touchePays.KeyChar != '1')
 
 if (touchePays.KeyChar == '1')
 {
-    appelationPays = "Haribo World";
+    paysSelectionne = "Haribo World";
     Console.WriteLine();
-    Console.WriteLine($"Veuillez sélectionner un terrain de {appelationPays} pour votre potager :");
-}
-else if (touchePays.KeyChar == '2')
-{
-    appelationPays = "Autre pays";
+    Console.WriteLine($"Veuillez sélectionner un terrain de Haribo World pour votre potager :");
     Console.WriteLine();
-    Console.WriteLine($"Veuillez sélectionner un terrain de {appelationPays} pour votre potager :");
-}
 
-
-// Affichage et choix des pays disponibles
-
-if (appelationPays == "Haribo World")
-{
-    for (int i = 0; i < tailleCarteTerrain; i++)
+    for (int i = 0; i < tailleCarteTerrain; i++) // Affichage et choix des pays disponibles
     {
         Console.Write(langueDeChat[i]);
         Console.Write("   ");
@@ -181,7 +170,16 @@ if (appelationPays == "Haribo World")
     }
 }
 
-Console.WriteLine();
+/* else if (touchePays.KeyChar == '2')
+{
+    Pays Autrespays = new Pays("Pas de pays", "Rien city");
+    Console.WriteLine();
+    Console.WriteLine($"Veuillez sélectionner un terrain de XXX pour votre potager :");
+    Console.WriteLine();
+} */
+
+Pays pays = new Pays(paysSelectionne);
+
 ConsoleKeyInfo toucheTerrain = Console.ReadKey();
 while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
 {
@@ -190,40 +188,27 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
     toucheTerrain = Console.ReadKey();
 }
 
-// definition de la meteo pour chaque terrain 
-Meteo meteoLangueDeChat = new Meteo(20, "Humide", 5, "temps orageux");
-Meteo meteoDragibus = new Meteo(22, "Modéré", 2, "ensoleillé");
-Meteo? meteoTerrainActuel = null;
+Meteo meteo = null!;
 
 if (toucheTerrain.KeyChar == '1')
 {
+    terrainSelectionne = "Langue de chat";
+    meteo = new Meteo(20, 5, 5, TypeMeteo.Pluie);
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain acidulé (semis : Langue de chat acidulée)");
-<<<<<<< Updated upstream
-    appelationTerrain = "Terrain de langue de chat";
-    meteoTerrainActuel = meteoLangueDeChat;
-=======
-    Console.WriteLine();
->>>>>>> Stashed changes
 
 }
 if (toucheTerrain.KeyChar == '2')
 {
+    meteo = new Meteo(30, 5, 5, TypeMeteo.Ensoleille);
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain sucré (semis : Dragibus)");
-<<<<<<< Updated upstream
-    meteoTerrainActuel = meteoDragibus;
-}
-
-=======
-    Console.WriteLine();
 }
 
 Terrain terrain = new Terrain(terrainSelectionne, 20, 4, 5, "acidule", "humide", 10, meteo);
-terrain.AddPlante(new Plante("langueDeChat", "annuelle", "zgr", 10, 10, "zgr", "zgr", "zgr", "zgr", 102, 45, 22));
+terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
 pays.AddTerrain(terrain);
 
->>>>>>> Stashed changes
 // Début du jeu 
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
 ConsoleKeyInfo debutJeu = Console.ReadKey();
@@ -237,39 +222,15 @@ do
     Console.WriteLine("Bon courage !");
     Console.WriteLine();
     // Affichage de la météo pour le terrain actuel
-<<<<<<< Updated upstream
-    Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
-    if (meteoTerrainActuel != null)
-    {
-        Console.WriteLine($"Température: {meteoTerrainActuel.Temperature}°C");
-        Console.WriteLine($"Humidité: {meteoTerrainActuel.Humidite}");
-        Console.WriteLine($"Précipitations: {meteoTerrainActuel.TauxPrécipitations} mm");
-        Console.WriteLine($"Type de météo: {meteoTerrainActuel.TypeMeteo}");
-        webcam.SurveillerMeteo(meteoTerrainActuel);
-    }
-
-
-
-    webcam.SurveillerIntrus();
-    webcam.AfficherInfoWebcam();
-
-    // suite du jeu
-    PasserAuMoisSuivant();
-    compteurMois++;
-
-=======
     Console.WriteLine("Information du terrain : ");
     Console.WriteLine();
     Console.WriteLine();
     Console.WriteLine(terrain.ToString());
     compteurMois++;
->>>>>>> Stashed changes
 }
 while (compteurMois == 1);
 
-while ((compteurMois > 1) && (appelationTerrain == "Terrain de langue de chat") && !plantesMortes && !partiefinie)
-//cas terrain de langue de chat 
-// réfléchir à comment faire pour toutes les combinaisons sans que ce soit trop long en code ( pas 2 ou 4 fois le même code)
+while ((compteurMois > 1) && !plantesMortes && !partiefinie)
 {
     Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
@@ -277,28 +238,18 @@ while ((compteurMois > 1) && (appelationTerrain == "Terrain de langue de chat") 
         Console.Write(moisSuivant[i]);
         Console.WriteLine();
     }
+
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
-    //Affichage meteo : 
-    Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
-    if (meteoTerrainActuel != null)
-    {
-        Console.WriteLine($"Température: {meteoTerrainActuel.Temperature}°C");
-        Console.WriteLine($"Humidité: {meteoTerrainActuel.Humidite}");
-        Console.WriteLine($"Précipitations: {meteoTerrainActuel.TauxPrécipitations} mm");
-        Console.WriteLine($"Type de météo: {meteoTerrainActuel.TypeMeteo}");
-        webcam.SurveillerMeteo(meteoTerrainActuel);
-    }
+    Console.WriteLine();
+    Console.WriteLine(terrain.ToString());
+    Console.WriteLine(terrain.RecapitulerInformationsWebcam());
 
-
-    webcam.SurveillerIntrus();
-    webcam.AfficherInfoWebcam();
 
     terrain.AfficherParcelle();
-
-
     compteurMois++;
     PasserAuMoisSuivant();
+
 
 
 
@@ -327,4 +278,3 @@ while ((compteurMois > 1) && (appelationTerrain == "Terrain de langue de chat") 
         Console.WriteLine("Dommage vous étiez en bonne voie !");
     }
 }
-
