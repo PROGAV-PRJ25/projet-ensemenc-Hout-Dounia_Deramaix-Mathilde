@@ -1,3 +1,4 @@
+
 public class Meteo
 {
     public double Temperature { get; set; }
@@ -21,5 +22,10 @@ public class Meteo
         {
             return TypeMeteo == "temps orageux" || TypeMeteo == "forte tempête" || TypeMeteo == "pluies battantes";
         }
+    }
+
+    public static implicit operator string(Meteo v)
+    {
+        throw new NotImplementedException();
     }
 }
