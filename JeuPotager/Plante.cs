@@ -1,26 +1,24 @@
 public class Plante
 {
-    public string? NomPlante { get; set; }
+    public string? Nom { get; set; }
     public string? Nature { get; set; }
     public string? SolPrefere { get; set; }
     public double Espacement { get; set; }
     public double SurfaceNecessaire { get; set; }
     public string? VitesseCroissance { get; set; }
-    public string? BesoinEau { get; set; }
-    public string? BesoinLumiere { get; set; }
-    public string? BesoinNutriment { get; set; }
-    public int TemperaturePreferee { get; set; }
-    public string? Maladie { get; set; }
+    public string? BesoinEau { get; set; } //conditions préf
+    public string? BesoinLumiere { get; set; } //conditions préf
+    public string? BesoinNutriment { get; set; } //conditions préf
+    public int TemperaturePreferee { get; set; } //conditions préf
+    public bool EstMalade { get; set; }
     public int EsperanceDeVie { get; set; }
     public int ProductionMax { get; set; }
-
     public bool EstSemee { get; private set; } = false;
     public bool EstArrosee { get; private set; } = false;
     public int JoursCroissance { get; private set; } = 0;
-
     public string CroissanceVerticale { get; private set; } = "";
     public string CroissanceHorizontale { get; private set; } = "";
-    public List<string> SaisonsDeSemis { get; set; }
+    /* public List<string> SaisonsDeSemis { get; set; } */
     public int SemisDisponibles { get; private set; }
     public bool EstMorte { get; private set; }
 
@@ -35,9 +33,9 @@ public class Plante
     }
 
 
-    public Plante(string nomPlante, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, string maladie, int esperanceVie, int productionmax, List<string> saisonsDeSemis)
+    public Plante(string nom, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, int esperanceVie, int productionmax /* List<string> saisonsDeSemis */)
     {
-        NomPlante = nomPlante;
+        Nom = nom;
         Nature = nature;
         SolPrefere = solPref;
         Espacement = espacement;
@@ -47,12 +45,13 @@ public class Plante
         BesoinLumiere = besoinLum;
         BesoinNutriment = besoinNutriment;
         TemperaturePreferee = temperaturePref;
-        Maladie = maladie;
         EsperanceDeVie = esperanceVie;
         ProductionMax = productionmax;
-        SaisonsDeSemis = saisonsDeSemis;
+        /* SaisonsDeSemis = saisonsDeSemis; */
         SemisDisponibles = 0;
         EstMorte = false;
+        EstMalade = false;
+
     }
 
     public void Semer()
@@ -60,11 +59,11 @@ public class Plante
         if (!EstSemee)
         {
             EstSemee = true;
-            Console.WriteLine($"{NomPlante} a été semée !");
+            Console.WriteLine($"{Nom} a été semée !");
         }
         else
         {
-            Console.WriteLine($"{NomPlante} est déjà semée.");
+            Console.WriteLine($"{Nom} est déjà semée.");
         }
     }
 
@@ -73,11 +72,11 @@ public class Plante
         if (EstSemee)
         {
             EstArrosee = true;
-            Console.WriteLine($"{NomPlante} a été arrosée !");
+            Console.WriteLine($"{Nom} a été arrosée !");
         }
         else
         {
-            Console.WriteLine($"Impossible d’arroser {NomPlante} car elle n’est pas encore semée.");
+            Console.WriteLine($"Impossible d’arroser {Nom} car elle n’est pas encore semée.");
         }
     }
 
@@ -102,16 +101,16 @@ public class Plante
             if (ConditionsRespectees(humiditeTerrain, ensoleillement, richesseSol, temperatureActuelle))
             {
                 JoursCroissance++;
-                Console.WriteLine($"{NomPlante} a grandi. Jours de croissance : {JoursCroissance}");
+                Console.WriteLine($"{Nom} a grandi. Jours de croissance : {JoursCroissance}");
             }
             else
             {
-                Console.WriteLine($"{NomPlante} ne peut pas croître, les conditions ne sont pas respectées.");
+                Console.WriteLine($"{Nom} ne peut pas croître, les conditions ne sont pas respectées.");
             }
         }
         else if (EstSemee)
         {
-            Console.WriteLine($"{NomPlante} a besoin d’eau pour pousser.");
+            Console.WriteLine($"{Nom} a besoin d’eau pour pousser.");
         }
     }
 
@@ -120,7 +119,7 @@ public class Plante
     {
         if (EstRecoltable)
         {
-            Console.WriteLine($"Récolte de {ProductionMax} {NomPlante}(s) !");
+            Console.WriteLine($"Récolte de {ProductionMax} {Nom}(s) !");
             SemisDisponibles += 2;  // Ajoute 2 semis à chaque récolte
             Console.WriteLine($"{SemisDisponibles} semis supplémentaires sont disponibles");
 
@@ -130,7 +129,7 @@ public class Plante
         }
         else
         {
-            Console.WriteLine($"{NomPlante} n’est pas encore prête à être récoltée");
+            Console.WriteLine($"{Nom} n’est pas encore prête à être récoltée");
         }
     }
     public double ProbabiliteContamination()
@@ -139,6 +138,10 @@ public class Plante
         return random.NextDouble();  // génère une valeur entre 0 et 1
     }
 
+    public override string ToString()
+    {
+        return "";
+    }
 }
 
 

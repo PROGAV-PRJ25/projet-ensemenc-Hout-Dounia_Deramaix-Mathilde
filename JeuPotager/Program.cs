@@ -199,17 +199,31 @@ if (toucheTerrain.KeyChar == '1')
 {
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain acidulé (semis : Langue de chat acidulée)");
+<<<<<<< Updated upstream
     appelationTerrain = "Terrain de langue de chat";
     meteoTerrainActuel = meteoLangueDeChat;
+=======
+    Console.WriteLine();
+>>>>>>> Stashed changes
 
 }
 if (toucheTerrain.KeyChar == '2')
 {
     Console.WriteLine();
     Console.WriteLine("Vous avez choisi le terrain sucré (semis : Dragibus)");
+<<<<<<< Updated upstream
     meteoTerrainActuel = meteoDragibus;
 }
 
+=======
+    Console.WriteLine();
+}
+
+Terrain terrain = new Terrain(terrainSelectionne, 20, 4, 5, "acidule", "humide", 10, meteo);
+terrain.AddPlante(new Plante("langueDeChat", "annuelle", "zgr", 10, 10, "zgr", "zgr", "zgr", "zgr", 102, 45, 22));
+pays.AddTerrain(terrain);
+
+>>>>>>> Stashed changes
 // Début du jeu 
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
 ConsoleKeyInfo debutJeu = Console.ReadKey();
@@ -223,6 +237,7 @@ do
     Console.WriteLine("Bon courage !");
     Console.WriteLine();
     // Affichage de la météo pour le terrain actuel
+<<<<<<< Updated upstream
     Console.WriteLine($"Météo actuelle pour {appelationTerrain} :");
     if (meteoTerrainActuel != null)
     {
@@ -242,6 +257,13 @@ do
     PasserAuMoisSuivant();
     compteurMois++;
 
+=======
+    Console.WriteLine("Information du terrain : ");
+    Console.WriteLine();
+    Console.WriteLine();
+    Console.WriteLine(terrain.ToString());
+    compteurMois++;
+>>>>>>> Stashed changes
 }
 while (compteurMois == 1);
 
@@ -271,6 +293,12 @@ while ((compteurMois > 1) && (appelationTerrain == "Terrain de langue de chat") 
 
     webcam.SurveillerIntrus();
     webcam.AfficherInfoWebcam();
+
+    terrain.AfficherParcelle();
+
+
+    compteurMois++;
+    PasserAuMoisSuivant();
 
 
 
