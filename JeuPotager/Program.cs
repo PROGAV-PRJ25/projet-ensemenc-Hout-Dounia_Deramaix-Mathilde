@@ -190,15 +190,17 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
     toucheTerrain = Console.ReadKey();
 }
 
-Meteo meteo = null!;
+//Meteo meteo = null!;
 Terrain? terrain = null!;
 
 if (toucheTerrain.KeyChar == '1')
 {
     terrainSelectionne = "Langue de chat";
-    meteo = new Meteo(20, 5, 5, TypeMeteo.Pluie);
+    //meteo = new Meteo(20, 5, 5, TypeMeteo.Pluie);
+    Meteo meteo1 = new Meteo();
+    meteo1.AfficherConditions();
     Console.WriteLine();
-    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, meteo);
+    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, meteo1);
     terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
     pays.AddTerrain(terrain);
     Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
@@ -206,8 +208,10 @@ if (toucheTerrain.KeyChar == '1')
 if (toucheTerrain.KeyChar == '2')
 {
     terrainSelectionne = "Dragibus";
-    meteo = new Meteo(30, 5, 5, TypeMeteo.Ensoleille);
-    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, meteo);
+    //meteo = new Meteo(30, 5, 5, TypeMeteo.Ensoleille);
+    Meteo meteo2 = new Meteo();
+    meteo2.AfficherConditions();
+    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, meteo2);
     terrain.AddPlante(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
     pays.AddTerrain(terrain);
     Console.WriteLine();
@@ -247,10 +251,18 @@ while ((compteurMois > 1) && !plantesMortes && !partiefinie)
         Console.WriteLine();
     }
 
+
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
+    Meteo nouvelleMeteo = new Meteo();
+    terrain.MiseAJourMeteo(nouvelleMeteo);
+    nouvelleMeteo.AfficherConditions();
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("🌿 Informations Terrain");
+    Console.ResetColor();
     Console.WriteLine(terrain.ToString());
+
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
 
 
@@ -286,3 +298,9 @@ while ((compteurMois > 1) && !plantesMortes && !partiefinie)
         Console.WriteLine("Dommage vous étiez en bonne voie !");
     }
 }
+//action à ajouter pour chaque mois 
+/* Console.WriteLine("Choisissez une plante à semer (entrez le nom de la plante) :");
+string nomPlante = Console.ReadLine();
+Plante plante = // Créer ou récupérer la plante selon le nom
+plante.Semer();
+*/
