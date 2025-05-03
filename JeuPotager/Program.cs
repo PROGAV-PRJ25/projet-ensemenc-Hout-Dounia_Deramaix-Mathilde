@@ -1,5 +1,7 @@
 ﻿
 
+using System.Diagnostics.Metrics;
+
 string[] bienvenueENSC = {
             "  ____  _                                                         ______ _   _  _____                            _____   _ ",
             " |  _ \\(_)                                                       |  ____| \\ | |/ ____|                          / ____| | |",
@@ -189,25 +191,31 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
 }
 
 Meteo meteo = null!;
+Terrain? terrain = null!;
 
 if (toucheTerrain.KeyChar == '1')
 {
     terrainSelectionne = "Langue de chat";
     meteo = new Meteo(20, 5, 5, TypeMeteo.Pluie);
     Console.WriteLine();
-    Console.WriteLine("Vous avez choisi le terrain acidulé (semis : Langue de chat acidulée)");
-
+    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, meteo);
+    terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
+    pays.AddTerrain(terrain);
+    Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
 }
 if (toucheTerrain.KeyChar == '2')
 {
+    terrainSelectionne = "Dragibus";
     meteo = new Meteo(30, 5, 5, TypeMeteo.Ensoleille);
+    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, meteo);
+    terrain.AddPlante(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
+    pays.AddTerrain(terrain);
     Console.WriteLine();
-    Console.WriteLine("Vous avez choisi le terrain sucré (semis : Dragibus)");
+    Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}");
 }
 
-Terrain terrain = new Terrain(terrainSelectionne, 20, 4, 5, "acidule", "humide", 10, meteo);
-terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
-pays.AddTerrain(terrain);
+
+
 
 // Début du jeu 
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");

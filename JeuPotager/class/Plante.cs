@@ -16,8 +16,6 @@ public class Plante
     public bool EstSemee { get; private set; } = false;
     public bool EstArrosee { get; private set; } = false;
     public int JoursCroissance { get; private set; } = 0;
-    public string CroissanceVerticale { get; private set; } = "";
-    public string CroissanceHorizontale { get; private set; } = "";
     /* public List<string> SaisonsDeSemis { get; set; } */
     public int SemisDisponibles { get; private set; }
     public bool EstMorte { get; private set; }
@@ -33,13 +31,13 @@ public class Plante
     }
 
 
-    public Plante(string nom, string nature, string solPref, double espacement, double surfanceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, int esperanceVie, int productionmax /* List<string> saisonsDeSemis */)
+    public Plante(string nom, string nature, string solPref, double espacement, double surfaceNecessaire, string vitesseCroissance, string besoinEau, string besoinLum, string besoinNutriment, int temperaturePref, int esperanceVie, int productionmax /* List<string> saisonsDeSemis */)
     {
         Nom = nom;
         Nature = nature;
         SolPrefere = solPref;
         Espacement = espacement;
-        SurfaceNecessaire = surfanceNecessaire;
+        SurfaceNecessaire = surfaceNecessaire;
         VitesseCroissance = vitesseCroissance;
         BesoinEau = besoinEau;
         BesoinLumiere = besoinLum;
@@ -94,14 +92,28 @@ public class Plante
         return conditionsOk >= 2;
     }
 
-    public void Croissance(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle)
+    public void Croissance(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle, Meteo meteo )
     {
         if (EstSemee && EstArrosee)
         {
+            // Ajuste les cdt selon la météo
+            if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
+            {
+                // Réduit croissance des plantes sous conditions extrêmes
+                Console.WriteLine($"{Nom} subit un ralentissement à cause de la tempête !");
+                JoursCroissance = Math.Max(0, JoursCroissance - 1); // réduire un jour de croissance
+            }
             if (ConditionsRespectees(humiditeTerrain, ensoleillement, richesseSol, temperatureActuelle))
             {
                 JoursCroissance++;
                 Console.WriteLine($"{Nom} a grandi. Jours de croissance : {JoursCroissance}");
+                double probabilitéContamination = ProbabiliteContamination();
+                //verif contamination
+                if (probabilitéContamination < 0.2)  // Si la proba est inférieure à 20%
+                {
+                    EstMalade = true;
+                    Console.WriteLine($"{Nom} a été contaminée et est malade ! ");
+                }
             }
             else
             {
