@@ -1,12 +1,12 @@
 public class Terrain
 {
     public string? Nom { get; set; }
-    public double Superficie { get; set; }
+    public double? Superficie { get; set; }
     public int LongueurTerrain { get; set; }
     public int LargeurTerrain { get; set; }
     public string? TypeSol { get; set; }
     public string? HumiditeSol { get; set; }
-    public int CapaciteMaxPlantes { get; set; }
+    public int? CapaciteMaxPlantes { get; set; }
     public int TemperatureSol { get; set; }
     public Meteo meteo { get; set; }
 
@@ -75,6 +75,11 @@ public class Terrain
         }
         return false;
     }
+    public void MiseAJourMeteo(Meteo nouvelleMeteo)
+    {
+        this.meteo = nouvelleMeteo;
+    }
+
 
     public void AfficherParcelle()
     {
@@ -121,7 +126,7 @@ public class Terrain
         return $"Terrain {Nom} ({Superficie} m²)\n" +
                $"Type de sol : {TypeSol}\n" +
                $"Capacité max : {CapaciteMaxPlantes} plantes\n" +
-               $"Plantes présentes : {nbPlantes}\n\n" +
-               "Informations météo :\n" + meteo.ToString();
+               $"Plantes présentes : {nbPlantes}\n\n" ;
+               //"Informations météo :\n" + meteo.ToString();
     }
 }
