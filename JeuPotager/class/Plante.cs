@@ -52,18 +52,7 @@ public class Plante
 
     }
 
-    public void Semer()
-    {
-        if (!EstSemee)
-        {
-            EstSemee = true;
-            Console.WriteLine($"{Nom} a été semée !");
-        }
-        else
-        {
-            Console.WriteLine($"{Nom} est déjà semée.");
-        }
-    }
+
 
     public void Arroser()
     {
@@ -92,7 +81,7 @@ public class Plante
         return conditionsOk >= 2;
     }
 
-    public void Croissance(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle, Meteo meteo )
+    public void Croissance(string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle, Meteo meteo)
     {
         if (EstSemee && EstArrosee)
         {

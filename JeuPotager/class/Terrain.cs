@@ -9,6 +9,7 @@ public class Terrain
     public int? CapaciteMaxPlantes { get; set; }
     public int TemperatureSol { get; set; }
     public double TemperatureConsigne { get; set; }
+    public int NbPlantes { get; private set; }
     public Meteo meteo { get; set; }
 
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
@@ -55,6 +56,7 @@ public class Terrain
                 if (Plantes[x][y] == null)
                 {
                     Plantes[x][y] = plante;
+                    NbPlantes++;
                     return true;
                 }
             }
@@ -71,6 +73,7 @@ public class Terrain
                 if (Plantes[x][y] == plante)
                 {
                     Plantes[x][y] = null;
+                    NbPlantes--;
                     return true;
                 }
             }
@@ -127,12 +130,20 @@ public class Terrain
 
     public override string ToString()
     {
-        int nbPlantes = Plantes.Sum(ligne => ligne.Count(p => p != null));
-
         return $"Terrain {Nom} ({Superficie} m²)\n" +
                $"Type de sol : {TypeSol}\n" +
                $"Capacité max : {CapaciteMaxPlantes} plantes\n" +
-               $"Plantes présentes : {nbPlantes}\n\n";
+               $"Plantes présentes : {NbPlantes}\n\n";
         //"Informations météo :\n" + meteo.ToString();
+    }
+
+
+    public void Semer(Plante plante)
+    {
+        while (NbPlantes < CapaciteMaxPlantes)
+        {
+            AddPlante(plante);
+        }
+        AfficherParcelle();
     }
 }

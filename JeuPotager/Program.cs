@@ -103,7 +103,7 @@ int tailleCartePays = 11;
 int tailleCarteTerrain = 13;
 bool plantesMortes = false;
 bool partiefinie = false;
-int compteurMois = 0;
+int compteurMois = 1;
 string paysSelectionne = "";
 string terrainSelectionne = "";
 
@@ -227,8 +227,9 @@ if (toucheTerrain.KeyChar == '1')
     terrain.meteo = meteo;
     meteo.AfficherConditions();
     Console.WriteLine();
-    terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
+    Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
     pays.AddTerrain(terrain);
+    terrain.Semer(planteLangueChat);
     Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
 }
 if (toucheTerrain.KeyChar == '2')
@@ -237,7 +238,7 @@ if (toucheTerrain.KeyChar == '2')
     Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
     meteo2.AfficherConditions();
     terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
-    terrain.AddPlante(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
+    terrain.Semer(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
     pays.AddTerrain(terrain);
     Console.WriteLine();
     Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}");
@@ -255,19 +256,12 @@ do
     Console.Clear();
     Console.WriteLine(" Premier mois ...");
     Console.WriteLine();
-    Console.WriteLine(" Vos semis ont été plantés !");
-    Console.WriteLine("Bon courage !");
-    Console.WriteLine();
-    // Affichage de la météo pour le terrain actuel
-    Console.WriteLine("Information du terrain : ");
-    Console.WriteLine();
-    Console.WriteLine();
-    Console.WriteLine(terrain.ToString());
+
     compteurMois++;
 }
-while (compteurMois == 1);
+while (compteurMois > 2);
 
-while ((compteurMois > 1) && !plantesMortes && !partiefinie)
+while ((compteurMois > 2) && !plantesMortes && !partiefinie)
 {
     Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
@@ -287,11 +281,10 @@ while ((compteurMois > 1) && !plantesMortes && !partiefinie)
     Console.WriteLine("🌿 Informations Terrain");
     Console.ResetColor();
     Console.WriteLine(terrain.ToString());
-
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
-
-
     terrain.AfficherParcelle();
+
+
     compteurMois++;
     PasserAuMoisSuivant();
 
