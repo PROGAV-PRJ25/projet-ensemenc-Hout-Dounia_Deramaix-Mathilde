@@ -18,10 +18,10 @@ public class Meteo
 
     private Random random = new Random();
 
-    public Meteo(int numeroMois, double temperatureConsigneTerrain)
+    public Meteo(int numeroMois, Terrain terrain)
     {
-        GenererMeteo(); // Génère d'abord la météo (Type et précipitations)
-        GenererTemperature(temperatureConsigneTerrain, numeroMois); // Génère ensuite la température
+        GenererMeteo();
+        GenererTemperature(terrain.TemperatureConsigne, numeroMois);
     }
 
     public double GenererTemperature(double temperatureConsigneTerrain, int numeroMois)
