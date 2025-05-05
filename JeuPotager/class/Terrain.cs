@@ -8,6 +8,7 @@ public class Terrain
     public string? HumiditeSol { get; set; }
     public int? CapaciteMaxPlantes { get; set; }
     public int TemperatureSol { get; set; }
+    public double TemperatureConsigne { get; set; }
     public Meteo meteo { get; set; }
 
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
@@ -15,7 +16,7 @@ public class Terrain
     private Random Random { get; }
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
-                   string typeSol, string humiditeSol, int temperatureSol, Meteo meteo)
+                   string typeSol, string humiditeSol, int temperatureSol, double temperatureConsigne, Meteo meteo)
     {
         Nom = nom;
         Superficie = superficie;
@@ -25,6 +26,7 @@ public class Terrain
         HumiditeSol = humiditeSol;
         CapaciteMaxPlantes = longueurTerrain * largeurTerrain;
         TemperatureSol = temperatureSol;
+        TemperatureConsigne = temperatureConsigne;
         this.meteo = meteo;
         Random = new Random();
         InitialiserTerrain();
@@ -126,7 +128,7 @@ public class Terrain
         return $"Terrain {Nom} ({Superficie} m²)\n" +
                $"Type de sol : {TypeSol}\n" +
                $"Capacité max : {CapaciteMaxPlantes} plantes\n" +
-               $"Plantes présentes : {nbPlantes}\n\n" ;
-               //"Informations météo :\n" + meteo.ToString();
+               $"Plantes présentes : {nbPlantes}\n\n";
+        //"Informations météo :\n" + meteo.ToString();
     }
 }

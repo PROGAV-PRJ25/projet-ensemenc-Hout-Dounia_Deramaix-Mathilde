@@ -196,11 +196,10 @@ Terrain? terrain = null!;
 if (toucheTerrain.KeyChar == '1')
 {
     terrainSelectionne = "Langue de chat";
-    //meteo = new Meteo(20, 5, 5, TypeMeteo.Pluie);
-    Meteo meteo1 = new Meteo();
+    Meteo meteo1 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
     meteo1.AfficherConditions();
     Console.WriteLine();
-    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, meteo1);
+    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo1);
     terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
     pays.AddTerrain(terrain);
     Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
@@ -208,10 +207,9 @@ if (toucheTerrain.KeyChar == '1')
 if (toucheTerrain.KeyChar == '2')
 {
     terrainSelectionne = "Dragibus";
-    //meteo = new Meteo(30, 5, 5, TypeMeteo.Ensoleille);
-    Meteo meteo2 = new Meteo();
+    Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
     meteo2.AfficherConditions();
-    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, meteo2);
+    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
     terrain.AddPlante(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
     pays.AddTerrain(terrain);
     Console.WriteLine();
@@ -255,7 +253,7 @@ while ((compteurMois > 1) && !plantesMortes && !partiefinie)
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
-    Meteo nouvelleMeteo = new Meteo();
+    Meteo nouvelleMeteo = new Meteo(compteurMois, terrain);
     terrain.MiseAJourMeteo(nouvelleMeteo);
     nouvelleMeteo.AfficherConditions();
     Console.ForegroundColor = ConsoleColor.Green;
