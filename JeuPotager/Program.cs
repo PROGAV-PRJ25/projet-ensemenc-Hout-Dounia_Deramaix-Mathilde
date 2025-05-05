@@ -136,7 +136,7 @@ for (int i = 0; i < bienvenueENSC.Length; i++)
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine(" CONSIGNE : ");
-Console.WriteLine("🌱 Tu prends les commandes d’un potager dans un pays de ton choix : réel, imaginaire, ou tout droit sorti d’un conte ! À toi de semer, arroser, désherber, récolter, protéger... Mais aussi de faire face à la météo capricieuse et aux visiteurs indésirables !\n");
+Console.WriteLine("🌱 Tu prends les commandes d’un potager dans un pays de ton choix ! À toi de semer, arroser, désherber, récolter, protéger... Mais aussi de faire face à la météo capricieuse et aux visiteurs indésirables !\n");
 
 Console.ForegroundColor = ConsoleColor.Blue;
 Console.WriteLine("🎮 Objectifs :\n");
@@ -149,7 +149,7 @@ Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événeme
 
 Console.WriteLine("⏱️ Deux modes de jeu :\n");
 
-Console.WriteLine("1️⃣  Mode Classique (semaine après semaine) :");
+Console.WriteLine("1️⃣  Mode Classique (smois après mois) :");
 Console.WriteLine("   🌤️ Planifie calmement : sème, arrose, protège, récolte...");
 Console.WriteLine("   🐛 Gère les maladies, les nuisibles, le climat et les températures");
 Console.WriteLine("   🌻 Optimise chaque action pour faire pousser un jardin florissant\n");
