@@ -135,7 +135,32 @@ for (int i = 0; i < bienvenueENSC.Length; i++)
 
 Console.WriteLine();
 Console.WriteLine();
-Console.WriteLine(" CONSIGNE : .................");
+Console.WriteLine(" CONSIGNE : \n");
+
+Console.WriteLine("🌱 Tu prends les commandes d’un potager dans un pays de ton choix : réel, imaginaire, ou tout droit sorti d’un conte ! À toi de semer, arroser, désherber, récolter, protéger... mais aussi de faire face à la météo capricieuse et aux visiteurs indésirables !\n");
+
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("🎮 Objectifs :\n");
+Console.ResetColor();
+
+Console.WriteLine("- Planter une grande variété de semis et assurer leur bon développement 🌾");
+Console.WriteLine("- Surveiller leur état de santé : si plus de 50% des conditions idéales ne sont pas réunies… elles risquent de mourir 😢");
+Console.WriteLine("- Attention : certaines plantes peuvent tomber malades de manière imprévisible 🦠");
+Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événements inattendus peuvent tout bouleverser 🌪️🐰\n");
+
+Console.WriteLine("⏱️ Deux modes de jeu :\n");
+
+Console.WriteLine("1️⃣ Mode Classique (semaine après semaine) :");
+Console.WriteLine("   🌤️ Planifie calmement : sème, arrose, protège, récolte...");
+Console.WriteLine("   🐛 Gère les maladies, les nuisibles, le climat et les températures");
+Console.WriteLine("   🌻 Optimise chaque action pour faire pousser un jardin florissant\n");
+
+Console.WriteLine("2️⃣ Mode Urgence (réactions en temps réel) :");
+Console.WriteLine("   ⚡ Réagis au quart de tour face aux tempêtes ou à l’apparition d’animaux !");
+Console.WriteLine("   🧯 Déclenche des actions rapides pour sauver tes cultures");
+Console.WriteLine("   ❗ Petit rappel : les animaux sont sacrés, interdiction de leur faire du mal \n");
+
+Console.WriteLine("Prêt(e) à cultiver ton jardin de rêve et devenir le roi ou la reine des potagers ? À toi de jouer ! 🌿👑\n");
 Console.WriteLine();
 Console.WriteLine("Veuillez sélectionner un pays pour votre potager à de son numéro parmi les pays suivants :");
 Console.WriteLine();
