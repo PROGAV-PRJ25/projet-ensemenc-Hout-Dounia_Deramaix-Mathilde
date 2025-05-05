@@ -8,8 +8,6 @@ public enum TypeMeteo
     ForteTempete       // vent +++ et pluie +++
 }
 
-
-
 public class Meteo
 {
     public double Temperature { get; private set; }
@@ -17,6 +15,13 @@ public class Meteo
     public TypeMeteo Type { get; private set; }
 
     private Random random = new Random();
+
+    public Meteo() //météo par défaut
+    {
+        Temperature = 0;
+        TauxPrecipitations = 0;
+        Type = TypeMeteo.Ensoleille;
+    }
 
     public Meteo(int numeroMois, Terrain terrain)
     {
@@ -26,8 +31,7 @@ public class Meteo
 
     public double GenererTemperature(double temperatureConsigneTerrain, int numeroMois)
     {
-        int moisIndice = (numeroMois - 1) % 12; // revient à des mois entre 1 et 12 (mais indice donc -1)
-
+        int moisIndice = (numeroMois - 1 + 12) % 12;
         List<double> ecartsMensuels = new List<double>
         {
             -5,  // Janvier

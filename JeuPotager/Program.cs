@@ -220,10 +220,13 @@ Terrain? terrain = null!;
 if (toucheTerrain.KeyChar == '1')
 {
     terrainSelectionne = "Langue de chat";
-    Meteo meteo1 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
-    meteo1.AfficherConditions();
+
+    Meteo meteo = new Meteo();
+    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
+    meteo = new Meteo(compteurMois, terrain);
+    terrain.meteo = meteo;
+    meteo.AfficherConditions();
     Console.WriteLine();
-    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo1);
     terrain.AddPlante(new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2));
     pays.AddTerrain(terrain);
     Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");

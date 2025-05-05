@@ -77,6 +77,7 @@ public class Terrain
         }
         return false;
     }
+
     public void MiseAJourMeteo(Meteo nouvelleMeteo)
     {
         this.meteo = nouvelleMeteo;
