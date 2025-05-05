@@ -287,8 +287,11 @@ while ((compteurMois > 1) && !plantesMortes && !partiefinie)
     Console.WriteLine("🌿 Informations Terrain");
     Console.ResetColor();
     Console.WriteLine(terrain.ToString());
-
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine("📷 Informations Webcam");
+    Console.ForegroundColor = ConsoleColor.DarkMagenta;
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
+
 
 
     terrain.AfficherParcelle();
