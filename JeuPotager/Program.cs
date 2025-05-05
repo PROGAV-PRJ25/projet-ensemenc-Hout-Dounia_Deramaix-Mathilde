@@ -266,7 +266,7 @@ do
     compteurMois++;
 }
 while (compteurMois == 1);
-bool modeUrgence = false ; 
+
 while ((compteurMois > 1) && !plantesMortes && !partiefinie)
 {
     Console.Clear();
