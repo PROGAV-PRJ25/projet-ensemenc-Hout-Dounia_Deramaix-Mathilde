@@ -108,9 +108,9 @@ public class Terrain
     {
         bool intrusDetecte = SignalerIntrus();
         bool intemperieDetectee = SignalerIntemperie();
-        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.ForegroundColor = ConsoleColor.DarkMagenta;
 
-        string message = "\n 📷 Information transmise par la webcam pendant le mois :\n";
+        string message = "";
         Console.ResetColor();
 
         if (intrusDetecte)
