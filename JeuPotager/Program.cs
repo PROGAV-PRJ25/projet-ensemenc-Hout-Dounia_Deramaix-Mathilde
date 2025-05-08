@@ -259,9 +259,9 @@ do
 
     compteurMois++;
 }
-while (compteurMois > 2);
+while (compteurMois < 2);
 
-while ((compteurMois > 2) && !plantesMortes && !partiefinie)
+while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
 {
     Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
@@ -281,8 +281,53 @@ while ((compteurMois > 2) && !plantesMortes && !partiefinie)
     Console.WriteLine("🌿 Informations Terrain");
     Console.ResetColor();
     Console.WriteLine(terrain.ToString());
+    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+    Console.WriteLine("📷 Informations Terrain");
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
+    Console.ResetColor();
     terrain.AfficherParcelle();
+
+    Meteo meteo = new Meteo();
+    Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
+    Terrain terrain1 = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
+
+    for (int i = 1; i <= 2; i++)
+    {
+
+        Console.WriteLine("\nQue souhaitez-vous faire ce mois-ci ? (Vous pouvez faire 2 choix)");
+        Console.WriteLine($"Action  : {i} ");
+        Console.WriteLine("1. Arroser");
+        Console.WriteLine("2. Récolter de nouvelles plantes");
+        Console.WriteLine("3. Désherber");
+        Console.WriteLine("4. Semer");
+
+        ConsoleKeyInfo actionPlante = Console.ReadKey();
+        Console.WriteLine();  
+
+        if (actionPlante.KeyChar == '1')
+        {
+            planteLangueChat.Arroser();         }
+        else if (actionPlante.KeyChar == '2')
+        {
+            planteLangueChat.Recolter();
+        }
+        else if (actionPlante.KeyChar == '3')
+        {
+            //planteLangueChat.Desherber();
+            Console.WriteLine("\nVous avez désherbé autour de la plante");
+        }
+        else if (actionPlante.KeyChar == '4')
+        {
+            terrain1.Semer(planteLangueChat);
+            Console.WriteLine("\nVous avez semé la plante");
+        }
+        else
+        {
+            Console.WriteLine("\nChoix invalide");
+        }
+
+    }
+
 
 
     compteurMois++;
@@ -316,9 +361,3 @@ while ((compteurMois > 2) && !plantesMortes && !partiefinie)
         Console.WriteLine("Dommage vous étiez en bonne voie !");
     }
 }
-//action à ajouter pour chaque mois 
-/* Console.WriteLine("Choisissez une plante à semer (entrez le nom de la plante) :");
-string nomPlante = Console.ReadLine();
-Plante plante = // Créer ou récupérer la plante selon le nom
-plante.Semer();
-*/

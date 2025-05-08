@@ -114,11 +114,11 @@ public class Terrain
         Console.ResetColor();
 
         if (intrusDetecte)
-            message += "- ❗ Intrus repéré dans le potager !\n";
+            message += " ❗ Intrus repéré dans le potager !\n";
         if (intemperieDetectee)
-            message += "- 🌧️ Intempéries détectées dans votre jardin.\n";
+            message += " 🌧️ Intempéries détectées dans votre jardin.\n";
         if (!intrusDetecte && !intemperieDetectee)
-            message += "- ✅ Aucune urgence détectée par la webcam ce mois-ci.\n";
+            message += " ✅ Aucune urgence détectée par la webcam ce mois-ci.\n";
 
         return message;
     }

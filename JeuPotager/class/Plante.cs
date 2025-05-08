@@ -63,7 +63,9 @@ public class Plante
         }
         else
         {
-            Console.WriteLine($"Impossible d’arroser {Nom} car elle n’est pas encore semée.");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($" Impossible d’arroser {Nom} car elle n’est pas encore semée.");
+            Console.ResetColor();
         }
     }
 
@@ -120,7 +122,7 @@ public class Plante
     {
         if (EstRecoltable)
         {
-            Console.WriteLine($"Récolte de {ProductionMax} {Nom}(s) !");
+            Console.WriteLine($" Récolte de {ProductionMax} {Nom}(s) !");
             SemisDisponibles += 2;  // Ajoute 2 semis à chaque récolte
             Console.WriteLine($"{SemisDisponibles} semis supplémentaires sont disponibles");
 
@@ -130,7 +132,9 @@ public class Plante
         }
         else
         {
-            Console.WriteLine($"{Nom} n’est pas encore prête à être récoltée");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($" {Nom} n’est pas encore prête à être récoltée");
+            Console.ResetColor();
         }
     }
     public double ProbabiliteContamination()
