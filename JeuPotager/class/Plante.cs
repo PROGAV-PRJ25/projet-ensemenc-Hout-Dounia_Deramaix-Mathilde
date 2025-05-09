@@ -51,6 +51,15 @@ public class Plante
         EstMalade = false;
 
     }
+    // methode semer juste pr mettre à jour les booleens car dans terrain.cs la methode semer ne change pas
+    // l'etat des booleens 
+    public void Semer()
+    {
+        EstSemee = true;
+        EstArrosee = false;
+        //Console.WriteLine($"{Nom} a été semée !");
+    }
+
 
 
 
@@ -59,7 +68,7 @@ public class Plante
         if (EstSemee)
         {
             EstArrosee = true;
-            Console.WriteLine($"{Nom} a été arrosée !");
+            Console.WriteLine($"\n{Nom} a été arrosée ! 🚿 \n");
         }
         else
         {
@@ -90,7 +99,7 @@ public class Plante
             // Ajuste les cdt selon la météo
             if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
             {
-                // Réduit croissance des plantes sous conditions extrêmes
+                // Réduit croissance sous conditions extrêmes
                 Console.WriteLine($"{Nom} subit un ralentissement à cause de la tempête !");
                 JoursCroissance = Math.Max(0, JoursCroissance - 1); // réduire un jour de croissance
             }

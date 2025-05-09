@@ -11,10 +11,15 @@ public class Terrain
     public double TemperatureConsigne { get; set; }
     public int NbPlantes { get; private set; }
     public Meteo meteo { get; set; }
+    private Random randomPlacement = new Random();
+
 
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
+
+    public Plante? PlanteActuelle { get; set; }
+
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
                    string typeSol, string humiditeSol, int temperatureSol, double temperatureConsigne, Meteo meteo)
@@ -87,7 +92,7 @@ public class Terrain
     }
 
 
-    public void AfficherParcelle()
+    public void AfficherParcelleSaine()
     {
         for (int i = 0; i < LongueurTerrain; i++)
         {
@@ -96,8 +101,32 @@ public class Terrain
             {
                 if (Plantes[i][j] != null)
                     Console.Write(" 🌱 ");
-                else
+                //else
+                //Console.Write(" 🟫 ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+    }
+
+    public void AfficherParcelle()
+    {
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                if (Plantes[i][j] == null)
+                {
                     Console.Write(" 🟫 ");
+                }
+                else if (Plantes[i][j] is MauvaiseHerbe)
+                {
+                    Console.Write(" 🌾 ");
+                }
+                else
+                {
+                    Console.Write(" 🌱 ");
+                }
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -143,7 +172,49 @@ public class Terrain
         while (NbPlantes < CapaciteMaxPlantes)
         {
             AddPlante(plante);
+            plante.Semer();
         }
         AfficherParcelle();
     }
+
+    public void ApparaitreMauvaiseHerbe()
+    {
+        bool mauvaisesHerbesAjoutees = false;
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                if (Plantes[i][j] != null && Random.Next(0, 101) <= 5)
+                {
+                    Plantes[i][j] = new MauvaiseHerbe();
+                    mauvaisesHerbesAjoutees = true;
+                }
+            }
+        }
+        if (mauvaisesHerbesAjoutees)
+        {
+            Console.WriteLine("Attention, des mauvaises herbes envahissent votre terrain !");
+        }
+    }
+
+
+    public void Desherber()
+    {
+
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                if (Plantes[i][j] is MauvaiseHerbe)
+                {
+                    Console.Write("");
+
+                }
+            }
+        }
+        Console.WriteLine("Vous avez desherber vos mauvaises herbe");
+        AfficherParcelleSaine();
+    }
+
+
 }
