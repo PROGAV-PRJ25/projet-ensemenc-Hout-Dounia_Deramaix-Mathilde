@@ -216,6 +216,7 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
 
 //Meteo meteo = null!;
 Terrain? terrain = null!;
+Plante? planteUtilisee = null; 
 
 if (toucheTerrain.KeyChar == '1')
 {
@@ -227,9 +228,10 @@ if (toucheTerrain.KeyChar == '1')
     terrain.meteo = meteo;
     meteo.AfficherConditions();
     Console.WriteLine();
-    Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
+    planteUtilisee = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
+    //terrain.Semer(new Plante("langue De Chat", "acidulée", "", 1, 1, "", "", "", "", 2, 2, 2));
+    terrain.Semer(planteUtilisee);
     pays.AddTerrain(terrain);
-    terrain.Semer(planteLangueChat);
     Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
 }
 if (toucheTerrain.KeyChar == '2')
@@ -238,7 +240,8 @@ if (toucheTerrain.KeyChar == '2')
     Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
     meteo2.AfficherConditions();
     terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
-    terrain.Semer(new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15));
+    planteUtilisee = new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15);
+    terrain.Semer(planteUtilisee);
     pays.AddTerrain(terrain);
     Console.WriteLine();
     Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}");
@@ -274,22 +277,29 @@ while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
+
     Meteo nouvelleMeteo = new Meteo(compteurMois, terrain);
     terrain.MiseAJourMeteo(nouvelleMeteo);
     nouvelleMeteo.AfficherConditions();
+
+    //terrain.ApparaitreMauvaiseHerbe();
+
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("🌿 Informations Terrain");
     Console.ResetColor();
     Console.WriteLine(terrain.ToString());
+
     Console.ForegroundColor = ConsoleColor.DarkMagenta;
-    Console.WriteLine("📷 Informations Terrain");
+    Console.WriteLine("📷 Informations Webcam");
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
     Console.ResetColor();
+
+    terrain.ApparaitreMauvaiseHerbe();
     terrain.AfficherParcelle();
 
-    Meteo meteo = new Meteo();
-    Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
-    Terrain terrain1 = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
+    //Meteo meteo = new Meteo();
+    //Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
+    //Terrain terrain1 = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
 
     for (int i = 1; i <= 2; i++)
     {
@@ -302,23 +312,23 @@ while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
         Console.WriteLine("4. Semer");
 
         ConsoleKeyInfo actionPlante = Console.ReadKey();
-        Console.WriteLine();  
+        Console.WriteLine();
 
         if (actionPlante.KeyChar == '1')
         {
-            planteLangueChat.Arroser();         }
+            planteUtilisee?.Arroser();
+        }
         else if (actionPlante.KeyChar == '2')
         {
-            planteLangueChat.Recolter();
+            planteUtilisee?.Recolter();
         }
         else if (actionPlante.KeyChar == '3')
         {
-            //planteLangueChat.Desherber();
-            Console.WriteLine("\nVous avez désherbé autour de la plante");
+            terrain?.Desherber();
         }
         else if (actionPlante.KeyChar == '4')
         {
-            terrain1.Semer(planteLangueChat);
+            terrain?.Semer(planteUtilisee);
             Console.WriteLine("\nVous avez semé la plante");
         }
         else
