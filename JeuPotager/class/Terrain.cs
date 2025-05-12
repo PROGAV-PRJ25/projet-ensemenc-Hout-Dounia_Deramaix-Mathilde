@@ -6,6 +6,16 @@ public class Terrain
     public int LargeurTerrain { get; set; }
     public string? TypeSol { get; set; }
     public string? HumiditeSol { get; set; }
+
+    // humidité en mettre en int  Pluie=1 unité et bruine=0.5
+    // FAIRE UNE FONCTION
+
+    // La pluie est considérée comme  1 unité,  (pluie violente = 2 unité, pluie bruine = 0.5)
+    // stress hydrique de 0 ≤ niveau < 4; (sol imperméable)
+    //humide de  4 ≤ niveau < 6
+    // très humide de  6 ≤ niveau < 9
+    // humide de  9 ≤ niveau
+
     public int? CapaciteMaxPlantes { get; set; }
     public int TemperatureSol { get; set; }
     public double TemperatureConsigne { get; set; }
