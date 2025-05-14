@@ -141,7 +141,7 @@ Console.ForegroundColor = ConsoleColor.Blue;
 Console.WriteLine("🎮 Objectifs :\n");
 Console.ResetColor();
 
-Console.WriteLine("- Planter une grande variété de semis et assurer leur bon développement 🌾");
+Console.WriteLine("- Planter une grande variété de semis et assurer leur bon développement 🌾; Tout en te faisant un max d'argent 🤑💰");
 Console.WriteLine("- Surveiller leur état de santé : si plus de 50% des conditions idéales ne sont pas réunies… elles risquent de mourir 😢");
 Console.WriteLine("- Attention : certaines plantes peuvent tomber malades de manière imprévisible 🦠");
 Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événements inattendus peuvent tout bouleverser 🌪️🐰\n");
@@ -158,7 +158,7 @@ Console.WriteLine("   ⚡ Réagis au quart de tour face aux tempêtes ou à l’
 Console.WriteLine("   🧯 Déclenche des actions rapides pour sauver tes cultures");
 Console.WriteLine("   ❗ Petit rappel : les animaux sont sacrés, interdiction de leur faire du mal \n");
 
-Console.WriteLine("Prêt à cultiver ton jardin de rêve et devenir le roi ou la reine des potagers ? À toi de jouer ! 🌿\n");
+Console.WriteLine("Prêt à cultiver ton jardin de rêve et devenir le roi ou la reine des potagers ? À toi de jouer !\n");
 Console.WriteLine();
 Console.WriteLine("Veuillez sélectionner un pays pour votre potager à de son numéro parmi les pays suivants :");
 Console.WriteLine();

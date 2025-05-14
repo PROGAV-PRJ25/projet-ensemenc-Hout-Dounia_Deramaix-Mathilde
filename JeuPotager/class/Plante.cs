@@ -16,7 +16,8 @@ public class Plante
     public int NbrMoisDeCroissance { get;  set; } = 0;
     public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
     public int NbrMoisMaladeConsecutif { get; private set; } = 0;
-    public int NbrMoisAvecMauvaisesHerbesConsecutif { get;  set; } = 0;
+    public int NbrMoisAvecMauvaisesHerbesConsecutif { get; private set; } = 0;
+    public double PrixUnitaireDeLaPlante { get; private set; }
 
 
     //-------------  ETAT DE LA PLANTE
@@ -37,7 +38,7 @@ public class Plante
 
     public Plante(string nom, string nature, string solPref, double espacement, double surfaceNecessaire,
     int vitesseCroissance, string besoinEau, double temperaturePreferemin, double temperaturePreferemax,
-    int esperanceVie, int production, int nbrMoisAvantRecolte)
+    int esperanceVie, int production, int nbrMoisAvantRecolte, double prixUnitaireDeLaPlante)
     {
         Nom = nom;
         Nature = nature;
@@ -51,6 +52,7 @@ public class Plante
         EsperanceDeVie = esperanceVie;
         Production = production;
         NbrMoisAvantRecolte = nbrMoisAvantRecolte;
+        PrixUnitaireDeLaPlante = prixUnitaireDeLaPlante;
     }
 
     public void Grandir()
@@ -120,24 +122,22 @@ public class Plante
         }
     }
 
-
-    /* public void Recolter() ////// A mettre dans terrain
+    public int RecolterPlante()
     {
         if (EstRecoltable)
         {
-            Console.WriteLine($" Récolte de {Production} {Nom}(s) !");
-            StockSemisDisponible += Production;
-            Console.WriteLine($"{StockSemisDisponible} semis supplémentaires sont disponibles (classe Plante.cs)");
             EstSemee = false;
+            EstArrosee = false;
             NbrMoisDeCroissance = 0;
+            NbrMoisAvecMauvaisesHerbesConsecutif = 0;
+            NbrMoisMaladeConsecutif = 0;
+            return Production;
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($"N’est pas encore prête à être récoltée (classe Plante.cs)");
-            Console.ResetColor();
+            return 0;
         }
-    } */
+    }
 
     public void ApparaitreMauvaiseHerbe()
     {
