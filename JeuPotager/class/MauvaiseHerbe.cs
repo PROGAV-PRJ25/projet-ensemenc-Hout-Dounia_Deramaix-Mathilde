@@ -8,7 +8,7 @@ public class MauvaiseHerbe : Plante
         surfaceNecessaire: 0.1,
         vitesseCroissance: 1,
         besoinEau: "Aucune",
-        nbrDeMoisSansLumConsecutif: 0,
+        //nbrDeMoisSansLumConsecutif: 0,
         temperaturePreferemin: 0,
         temperaturePreferemax: 50,
         esperanceVie: 2,

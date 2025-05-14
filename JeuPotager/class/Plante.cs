@@ -13,20 +13,20 @@ public class Plante
     public double TemperaturePrefereeMax { get; set; }
     public int EsperanceDeVie { get; set; } // nbr de mois de vie max peu importe les conditions
     public int Production { get; set; }
-    public int NbrMoisDeCroissance { get; private set; } = 0;
+    public int NbrMoisDeCroissance { get;  set; } = 0;
     public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
     public int NbrMoisMaladeConsecutif { get; private set; } = 0;
-    public int NbrMoisAvecMauvaisesHerbesConsecutif { get; private set; } = 0;
+    public int NbrMoisAvecMauvaisesHerbesConsecutif { get;  set; } = 0;
 
 
     //-------------  ETAT DE LA PLANTE
     public bool EstMalade { get; set; } = false;
-    public bool EstMorte { get; private set; } = false;
-    public bool EstSemee { get; private set; } = false;
-    public bool EstArrosee { get; private set; } = false;
-    public bool EstDesherbee { get; private set; } = false;
-    public bool EstEntoureeParMauvaisesHerbes { get; private set; } = false;
-    public bool AGrandi { get; private set; } = false;
+    public bool EstMorte { get; set; } = false;
+    public bool EstSemee { get;  set; } = false;
+    public bool EstArrosee { get;  set; } = false;
+    public bool EstDesherbee { get;  set; } = false;
+    public bool EstEntoureeParMauvaisesHerbes { get;  set; } = false;
+    public bool AGrandi { get;  set; } = false;
     public bool EstRecoltable
     {
         get

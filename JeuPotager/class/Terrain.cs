@@ -81,7 +81,8 @@ public class Terrain
             {
                 if (Plantes[x][y] == plante)
                 {
-                    Plantes[x][y] = null;
+                    //Plantes[x][y] = null;
+                    plante.EstMorte = true;
                     NbPlantes--;
                     return true;
                 }
@@ -89,6 +90,7 @@ public class Terrain
         }
         return false;
     }
+
 
     public void MiseAJourMeteo(Meteo nouvelleMeteo)
     {
@@ -103,7 +105,11 @@ public class Terrain
             {
                 var plante = Plantes[i][j];
 
-                if (plante.EstMorte)
+                if (plante == null)
+                {
+                    Console.Write(" 🟫 ");
+                }
+                else if (plante.EstMorte)
                 {
                     Console.Write(" 🥀 ");
                 }
@@ -127,10 +133,6 @@ public class Terrain
                 {
                     Console.Write(" 🌱 ");
                 }
-                if (plante == null)
-                {
-                    Console.Write(" 🟫 ");
-                }
                 else
                 {
                     Console.Write(" 🟩 ");
@@ -139,6 +141,7 @@ public class Terrain
             Console.WriteLine("\n");
         }
     }
+
 
     private bool intrusDetecte;
     private bool intemperieDetectee;
@@ -199,7 +202,6 @@ public class Terrain
     public void ActiverModeUrgence()
 
     {
-        MettreAJourUrgence();
 
         if (intrusDetecte || intemperieDetectee)
         {
@@ -220,8 +222,10 @@ public class Terrain
             Console.ResetColor();
 
             AfficherMenuUrgence();
-            string actionChoisie = Console.ReadLine()!; //A VOIR
-            GererActionUrgence();
+            //GererActionUrgence();
+            bool bruitFait = GererActionUrgence();
+            GérerConséquencesUrgence(bruitFait);
+
         }
 
     }
@@ -230,14 +234,14 @@ public class Terrain
     {
         Console.WriteLine("\nMenu d'Urgence : Que voulez-vous faire ?\n");
         Console.WriteLine("1. Faire du bruit \n");
-        Console.WriteLine("2. Déployer une bâche \n");
+        Console.WriteLine("2. Déployer un pare-vent \n");
 
     }
 
-    private void GererActionUrgence()
+    private bool GererActionUrgence()
     {
         bool actionValide = false;
-        AfficherMenuUrgence();
+        bool bruitFait = false;
         while (!actionValide)
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
@@ -247,6 +251,7 @@ public class Terrain
             {
                 case '1':
                     Console.WriteLine("\nVous faites du bruit pour éloigner les intrus");
+                    bruitFait = true;
                     actionValide = true;
                     break;
                 case '2':
@@ -254,12 +259,48 @@ public class Terrain
                     actionValide = true;
                     break;
                 default:
-                    Console.WriteLine("\nOption invalide. Appuyez sur une touche de 1 à 4.");
+                    Console.WriteLine("\nOption invalide.");
                     break;
             }
         }
+        return bruitFait;
     }
 
+    private void GérerConséquencesUrgence(bool bruitFait)
+    {
+        if (!bruitFait && intrusDetecte)
+        {
+            // Récupération des plantes vivantes
+            List<(int x, int y)> plantesVivantes = new List<(int x, int y)>();
+
+            for (int x = 0; x < LongueurTerrain; x++)
+            {
+                for (int y = 0; y < LargeurTerrain; y++)
+                {
+                    var plante = Plantes[x][y];
+                    if (plante != null && !plante.EstMorte)
+                    {
+                        plantesVivantes.Add((x, y));
+                    }
+                }
+            }
+
+            if (plantesVivantes.Count > 0)
+            {
+                // Choisir une plante au hasard
+                var index = Random.Next(plantesVivantes.Count);
+                var (x, y) = plantesVivantes[index];
+                Plantes[x][y].EstMorte = true;
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nUne plante est morte dans votre jardin...");
+                Console.ResetColor();
+
+                Console.WriteLine("\nÉtat actuel du terrain :\n");
+                AfficherParcelle();
+            }
+        }
+    }
 
 
     public override string ToString()
