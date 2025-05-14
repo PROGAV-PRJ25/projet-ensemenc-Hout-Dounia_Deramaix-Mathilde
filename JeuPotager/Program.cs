@@ -1,8 +1,4 @@
-﻿
-
-using System.Diagnostics.Metrics;
-
-string[] bienvenueENSC = {
+﻿string[] bienvenueENSC = {
             "  ____  _                                                         ______ _   _  _____                            _____   _ ",
             " |  _ \\(_)                                                       |  ____| \\ | |/ ____|                          / ____| | |",
             " | |_) |_  ___ _ ____   _____ _ __  _   _  ___   ___ _   _ _ __  | |__  |  \\| | (___   ___ _ __ ___   ___ _ __ | |      | |",
@@ -146,17 +142,25 @@ Console.WriteLine("- Surveiller leur état de santé : si plus de 50% des condit
 Console.WriteLine("- Attention : certaines plantes peuvent tomber malades de manière imprévisible 🦠");
 Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événements inattendus peuvent tout bouleverser 🌪️🐰\n");
 
-Console.WriteLine("⏱️ Deux modes de jeu :\n");
-
-Console.WriteLine("1️⃣  Mode Classique (smois après mois) :");
-Console.WriteLine("   🌤️ Planifie calmement : sème, arrose, protège, récolte...");
-Console.WriteLine("   🐛 Gère les maladies, les nuisibles, le climat et les températures");
-Console.WriteLine("   🌻 Optimise chaque action pour faire pousser un jardin florissant\n");
-
-Console.WriteLine("2️⃣  Mode Urgence (réactions en temps réel) :");
-Console.WriteLine("   ⚡ Réagis au quart de tour face aux tempêtes ou à l’apparition d’animaux !");
-Console.WriteLine("   🧯 Déclenche des actions rapides pour sauver tes cultures");
-Console.WriteLine("   ❗ Petit rappel : les animaux sont sacrés, interdiction de leur faire du mal \n");
+Console.WriteLine("⏱️ Deux modes de jeu :\n appuyez sur i pour plus d'informations");
+ConsoleKeyInfo informations = Console.ReadKey();
+while (informations.KeyChar != 'i')
+{
+    Console.WriteLine();
+    Console.WriteLine("Erreur. Réessayez.");
+    informations = Console.ReadKey();
+}
+if (informations.KeyChar == 'i')
+{
+    Console.WriteLine("1️⃣  Mode Classique (smois après mois) :");
+    Console.WriteLine("   🌤️ Planifie calmement : sème, arrose, protège, récolte...");
+    Console.WriteLine("   🐛 Gère les maladies, les nuisibles, le climat et les températures");
+    Console.WriteLine("   🌻 Optimise chaque action pour faire pousser un jardin florissant\n");
+    Console.WriteLine("2️⃣  Mode Urgence (réactions en temps réel) :");
+    Console.WriteLine("   ⚡ Réagis au quart de tour face aux tempêtes ou à l’apparition d’animaux !");
+    Console.WriteLine("   🧯 Déclenche des actions rapides pour sauver tes cultures");
+    Console.WriteLine("   ❗ Petit rappel : les animaux sont sacrés, interdiction de leur faire du mal \n");
+}
 
 Console.WriteLine("Prêt à cultiver ton jardin de rêve et devenir le roi ou la reine des potagers ? À toi de jouer !\n");
 Console.WriteLine();
