@@ -148,10 +148,12 @@ public class Plante
         {
             EstEntoureeParMauvaisesHerbes = true;
         }
+
         if (EstEntoureeParMauvaisesHerbes == true)
         {
             NbrMoisAvecMauvaisesHerbesConsecutif++;
         }
+
         if (NbrMoisAvecMauvaisesHerbesConsecutif > 3)
         {
             EstMorte = true;
