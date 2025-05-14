@@ -281,40 +281,32 @@ public class Terrain
         AfficherParcelle();
     }
 
-    public void ApparaitreMauvaiseHerbe() // REVOIR BOOLEEN
+    public void ApparaitreMauvaiseHerbe()
     {
-        bool mauvaisesHerbesAjoutees = false;
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] != null && Random.Next(0, 101) <= 5)
-                {
-                    Plantes[i][j] = new MauvaiseHerbe();
-                    mauvaisesHerbesAjoutees = true;
-                }
+                var plante = Plantes[i][j];
+                plante.ApparaitreMauvaiseHerbe();
             }
         }
-        if (mauvaisesHerbesAjoutees)
-        {
-            Console.WriteLine("Attention, des mauvaises herbes envahissent votre terrain !");
-        }
+        AfficherParcelle();
     }
 
-    public void Desherber() // REVOIR MAUVAISES HERBES
+
+    public void Desherber()
     {
 
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] is MauvaiseHerbe)
-                {
-                    Console.Write("");
-                }
+                var plante = Plantes[i][j];
+                plante.Desherber();
             }
         }
-        Console.WriteLine("Vous avez desherber vos mauvaises herbe");
+        Console.WriteLine("Vous avez desherber vos mauvaises herbes !");
         AfficherParcelle();
     }
 
