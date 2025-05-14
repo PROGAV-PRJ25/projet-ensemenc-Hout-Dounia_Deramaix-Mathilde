@@ -35,7 +35,7 @@ string[] autrePays = {
     "|                #                |",
     "|                                 |",
     "|                *                |",
-    "|         2. Autres pays          |",
+    "|           2. Bientôt            |",
     "|_________________________________|",
 };
 
@@ -72,20 +72,13 @@ string[] dragibus = {
             "|_________________________________|",
         };
 
-string[] terrainVide = {
-    " _________________________________",
-    "|                                 |",
-    "|              #####              |",
-    "|             #     #             |",
-    "|                  #              |",
-    "|                #                |",
-    "|                #                |",
-    "|                                 |",
-    "|                *                |",
-    "|         X. Terrain vide         |",
-    "|                                 |",
-    "|        semis : Rien             |",
-    "|_________________________________|",
+string[] premierMois ={
+      "_____                    _                             _ ",
+     "|  __ \\                  (_)                           (_)",
+     "| |__) | __ ___ _ __ ___  _  ___ _ __   _ __ ___   ___  _ ___",
+     "|  ___/ '__/ _ \\ '_ ` _ \\| |/ _ \\ '__| | '_ ` _ \\ / _ \\| / __|",
+     "| |   | | |  __/ | | | | | |  __/ |    | | | | | | (_) | \\__ \\  _   _   _",
+     "|_|   |_|  \\___|_| |_| |_|_|\\___|_|    |_| |_| |_|\\___/|_|___/ (_) (_) (_)",
 };
 
 string[] moisSuivant = {
@@ -96,6 +89,7 @@ string[] moisSuivant = {
  "| |  | | (_) | \\__ \\  \\__ \\ |_| | |\\ V / (_| | | | | |_   _   _   _ ",
  "|_|  |_|\\___/|_|___/  |___/\\__,_|_| \\_/ \\__,_|_| |_|\\__| (_) (_) (_)",
 };
+
 
 //############################################################################################################
 
@@ -121,7 +115,12 @@ void PasserAuMoisSuivant()
     {
         partiefinie = true;
     }
+    compteurMois++;
 }
+
+//--------------------------------------------------
+//--------------------------------------------------   Début du Code principal
+//--------------------------------------------------
 
 
 // Affichage de bienvenue
@@ -164,8 +163,7 @@ Console.WriteLine();
 Console.WriteLine("Veuillez sélectionner un pays pour votre potager à de son numéro parmi les pays suivants :");
 Console.WriteLine();
 
-// Affichage et choix des pays disponibles
-for (int i = 0; i < tailleCartePays; i++)
+for (int i = 0; i < tailleCartePays; i++)// Affichage et choix des pays disponibles
 {
     Console.Write(hariboWorld[i]);
     Console.Write("   ");
@@ -188,21 +186,14 @@ if (touchePays.KeyChar == '1')
     Console.WriteLine($"Veuillez sélectionner un terrain de Haribo World pour votre potager :");
     Console.WriteLine();
 
-    for (int i = 0; i < tailleCarteTerrain; i++) // Affichage et choix des pays disponibles
+    for (int i = 0; i < tailleCarteTerrain; i++) // Affichage et choix des terrains disponibles
     {
         Console.Write(langueDeChat[i]);
         Console.Write("   ");
         Console.WriteLine(dragibus[i]);
     }
+    Console.WriteLine();
 }
-
-/* else if (touchePays.KeyChar == '2')
-{
-    Pays Autrespays = new Pays("Pas de pays", "Rien city");
-    Console.WriteLine();
-    Console.WriteLine($"Veuillez sélectionner un terrain de XXX pour votre potager :");
-    Console.WriteLine();
-} */
 
 Pays pays = new Pays(paysSelectionne);
 
@@ -214,37 +205,36 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
     toucheTerrain = Console.ReadKey();
 }
 
-//Meteo meteo = null!;
 Terrain? terrain = null!;
 Plante? planteUtilisee = null;
+Meteo meteo = new Meteo();
 
 if (toucheTerrain.KeyChar == '1')
 {
     terrainSelectionne = "Langue de chat";
-
-    Meteo meteo = new Meteo();
     terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
     meteo = new Meteo(compteurMois, terrain);
     terrain.meteo = meteo;
-    meteo.AfficherConditions();
     Console.WriteLine();
-    planteUtilisee = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
+    planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
     //terrain.Semer(new Plante("langue De Chat", "acidulée", "", 1, 1, "", "", "", "", 2, 2, 2));
-    terrain.Semer(planteUtilisee);
+
+
     pays.AddTerrain(terrain);
-    Console.WriteLine($"Vous avez choisi le terrain acidulé : {terrainSelectionne}");
+    Console.WriteLine($"Vous avez choisi le terrain acidulé!");
+    Console.WriteLine(terrain.ToString());
 }
 if (toucheTerrain.KeyChar == '2')
 {
-    terrainSelectionne = "Dragibus";
-    Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
-    meteo2.AfficherConditions();
-    terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
-    planteUtilisee = new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15);
-    terrain.Semer(planteUtilisee);
-    pays.AddTerrain(terrain);
-    Console.WriteLine();
-    Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}");
+    /*  terrainSelectionne = "Dragibus";
+     Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
+     meteo2.AfficherConditions();
+     terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
+     planteUtilisee = new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15);
+     terrain.Semer(planteUtilisee);
+     pays.AddTerrain(terrain);
+     Console.WriteLine();
+     Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}"); */
 }
 
 
@@ -257,12 +247,19 @@ ConsoleKeyInfo debutJeu = Console.ReadKey();
 do
 {
     Console.Clear();
-    Console.WriteLine(" Premier mois ...");
+    for (int i = 0; i < premierMois.Length; i++)
+    {
+        Console.Write(premierMois[i]);
+        Console.WriteLine();
+    }
     Console.WriteLine();
+    meteo.AfficherConditions();
+    terrain.Semer(planteUtilisee);
+    PasserAuMoisSuivant();
 
-    compteurMois++;
 }
-while (compteurMois < 1);
+while (compteurMois == 2);
+
 
 while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
 {
@@ -273,7 +270,8 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
         Console.WriteLine();
     }
 
-
+    Console.WriteLine();
+    Console.WriteLine();
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
@@ -348,10 +346,6 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
             }
         }
     }
-
-
-
-    compteurMois++;
     PasserAuMoisSuivant();
 
 

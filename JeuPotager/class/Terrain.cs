@@ -30,6 +30,13 @@ public class Terrain
 
     public Plante? PlanteActuelle { get; set; }
 
+    public Terrain(string nom, Meteo meteo)
+    {
+        Nom = nom;
+        this.meteo = meteo;
+        Random = new Random();
+        InitialiserTerrain();
+    }
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
                    string typeSol, string humiditeSol, int temperatureSol, double temperatureConsigne, Meteo meteo)
