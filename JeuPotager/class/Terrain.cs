@@ -10,12 +10,14 @@ public class Terrain
     public int? CapaciteMaxPlantes { get; set; }
     public double TemperatureConsigne { get; set; }
     public int NbPlantes { get; private set; } = 0;
+    public double PiecesOrEnChocolat { get; private set; } = 0;
     public Meteo meteo { get; set; }
     private Random randomPlacement = new Random();
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
-    public int StockSemisDisponible { get; private set; } = 0;
+    public int? StockTotalDeSemis { get; private set; }
+
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
                    string typeSol, string humiditeSol, double niveauHumiditeSol, double temperatureConsigne, Meteo meteo)
@@ -31,6 +33,7 @@ public class Terrain
         TemperatureConsigne = temperatureConsigne;
         this.meteo = meteo;
         Random = new Random();
+        StockTotalDeSemis = CapaciteMaxPlantes;
         InitialiserTerrain();
     }
 
@@ -66,6 +69,8 @@ public class Terrain
                 {
                     Plantes[x][y] = plante;
                     NbPlantes++;
+                    StockTotalDeSemis--;
+
                     return true;
                 }
             }
@@ -281,40 +286,29 @@ public class Terrain
         AfficherParcelle();
     }
 
-    public void ApparaitreMauvaiseHerbe() // REVOIR BOOLEEN
+    public void ApparaitreMauvaiseHerbe()
     {
-        bool mauvaisesHerbesAjoutees = false;
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] != null && Random.Next(0, 101) <= 5)
-                {
-                    Plantes[i][j] = new MauvaiseHerbe();
-                    mauvaisesHerbesAjoutees = true;
-                }
+                var plante = Plantes[i][j];
+                plante.ApparaitreMauvaiseHerbe();
             }
-        }
-        if (mauvaisesHerbesAjoutees)
-        {
-            Console.WriteLine("Attention, des mauvaises herbes envahissent votre terrain !");
         }
     }
 
-    public void Desherber() // REVOIR MAUVAISES HERBES
+    public void Desherber()
     {
-
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] is MauvaiseHerbe)
-                {
-                    Console.Write("");
-                }
+                var plante = Plantes[i][j];
+                plante.Desherber();
             }
         }
-        Console.WriteLine("Vous avez desherber vos mauvaises herbe");
+        Console.WriteLine("Vous avez desherber vos mauvaises herbes ! ");
         AfficherParcelle();
     }
 
@@ -368,6 +362,58 @@ public class Terrain
             HumiditeSol = "inonde";
         }
     }
-}
 
-/// OPTION BONUS A FAIRE VOIR CHATTY :)
+    public void RecolterPlantes()
+    {
+        int totalRecolte = 0;
+
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                var plante = Plantes[i][j];
+                if (plante != null && plante.EstRecoltable)
+                {
+                    int quantite = plante.RecolterPlante();
+                    totalRecolte += quantite;
+                    StockTotalDeSemis += quantite;
+                }
+            }
+        }
+
+        if (totalRecolte > 0)
+        {
+            Console.WriteLine($"Stock total après récolte : {StockTotalDeSemis}");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Aucune plante n'était prête à être récoltée.");
+            Console.ResetColor();
+        }
+
+        Console.WriteLine("Vous avez désherbé vos mauvaises herbes.");
+        AfficherParcelle();
+    }
+
+    public void VendreSemis(Plante plante)
+    {
+        Console.Write("Quantité de semis à vendre : ");
+        string saisie = Console.ReadLine()!;
+
+        if (!int.TryParse(saisie, out int quantite) || quantite <= 0)
+        {
+            Console.WriteLine("Quantité invalide.");
+            return;
+        }
+
+        double prixUnitaire = plante.PrixUnitaireDeLaPlante;
+        double gain = quantite * prixUnitaire;
+
+        StockTotalDeSemis -= quantite;
+        PiecesOrEnChocolat += gain;
+
+        Console.WriteLine($"✅ Vous avez vendu {quantite} semis de {plante.Nom} pour {gain} pièces d’or en chocolat !");
+        Console.WriteLine($"💰 Nouveau solde : {PiecesOrEnChocolat} pièces.");
+    }
+}

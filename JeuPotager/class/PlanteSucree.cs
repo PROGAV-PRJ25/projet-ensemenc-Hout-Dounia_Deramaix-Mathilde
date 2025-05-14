@@ -12,7 +12,8 @@ public class PlanteSucree : Plante
         temperaturePreferemax: 25,
         esperanceVie: 6,
         production: 5,
-        nbrMoisAvantRecolte: 4)
+        nbrMoisAvantRecolte: 4,
+        prixUnitaireDeLaPlante: 8)
     {
         this.Nom = nom;
     }
