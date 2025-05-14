@@ -6,6 +6,16 @@ public class Terrain
     public int LargeurTerrain { get; set; }
     public string? TypeSol { get; set; }
     public string? HumiditeSol { get; set; }
+
+    // humidité en mettre en int  Pluie=1 unité et bruine=0.5
+    // FAIRE UNE FONCTION
+
+    // La pluie est considérée comme  1 unité,  (pluie violente = 2 unité, pluie bruine = 0.5)
+    // stress hydrique de 0 ≤ niveau < 4; (sol imperméable)
+    //humide de  4 ≤ niveau < 6
+    // très humide de  6 ≤ niveau < 9
+    // humide de  9 ≤ niveau
+
     public int? CapaciteMaxPlantes { get; set; }
     public int TemperatureSol { get; set; }
     public double TemperatureConsigne { get; set; }
@@ -139,11 +149,20 @@ public class Terrain
             Console.WriteLine();
         }
     }
+    private bool intrusDetecte;
+    private bool intemperieDetectee;
+
+
+    private void MettreAJourUrgence()
+    {
+        intrusDetecte = SignalerIntrus();
+        intemperieDetectee = SignalerIntemperie();
+    }
 
     public string RecapitulerInformationsWebcam()
     {
-        bool intrusDetecte = SignalerIntrus();
-        bool intemperieDetectee = SignalerIntemperie();
+        MettreAJourUrgence();
+
         Console.ForegroundColor = ConsoleColor.DarkMagenta;
 
         string message = "";
@@ -159,10 +178,92 @@ public class Terrain
         return message;
     }
 
+
+
     private bool SignalerIntrus() => Random.Next(1, 101) <= risquePresenceIntrus;
 
     private bool SignalerIntemperie() =>
         meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes;
+
+
+    public void ActiverModeUrgence()
+
+    {
+        MettreAJourUrgence();
+
+
+        if (intrusDetecte || intemperieDetectee)
+        {
+
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            // Informer l'utilisateur
+            if (intrusDetecte)
+            {
+                Console.WriteLine("⚠️ Mode Urgence activé : Intrus détecté dans le potager !");
+            }
+
+            if (intemperieDetectee)
+            {
+                Console.WriteLine("⚠️ Mode Urgence activé : Conditions météorologiques défavorables détectées !");
+            }
+
+            Console.ResetColor();
+
+            AfficherMenuUrgence();
+            string actionChoisie = Console.ReadLine()!;
+            GererActionUrgence();
+        }
+
+    }
+
+    private void AfficherMenuUrgence()
+    {
+        Console.WriteLine("\nMenu d'Urgence : Que voulez-vous faire ?\n");
+        Console.WriteLine("1. Faire du bruit \n");
+        Console.WriteLine("2. Déployer une bâche \n");
+        Console.WriteLine("3. Rebouchez les trous \n");
+        Console.WriteLine("4. Creuser une tranchée \n");
+
+    }
+
+    private void GererActionUrgence()
+    {
+        bool actionValide = false;
+        AfficherMenuUrgence();
+        while (!actionValide)
+        {
+            
+
+            ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+            char key = keyInfo.KeyChar;
+
+            switch (key)
+            {
+                case '1':
+                    Console.WriteLine("\nVous faites du bruit pour éloigner les intrus");
+                    actionValide = true;
+                    break;
+                case '2':
+                    Console.WriteLine("\nVous déployez une bâche pour protéger vos récoltes");
+                    actionValide = true;
+                    break;
+                case '3':
+                    Console.WriteLine("\nVous rebouchez les trous dans le terrain.");
+                    actionValide = true;
+                    break;
+                case '4':
+                    Console.WriteLine("\nVous creusez une tranchée pour éviter les inondations.");
+                    actionValide = true;
+                    break;
+                default:
+                    Console.WriteLine("\nOption invalide. Appuyez sur une touche de 1 à 4.");
+                    break;
+            }
+        }
+    }
+
+
 
     public override string ToString()
     {

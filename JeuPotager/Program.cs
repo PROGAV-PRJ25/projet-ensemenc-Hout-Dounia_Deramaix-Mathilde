@@ -97,7 +97,7 @@ int tailleCartePays = 11;
 int tailleCarteTerrain = 13;
 bool plantesMortes = false;
 bool partiefinie = false;
-int compteurMois = 1;
+int compteurMois = 0;
 string paysSelectionne = "";
 string terrainSelectionne = "";
 
@@ -260,7 +260,8 @@ do
 }
 while (compteurMois == 2);
 
-while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
+
+while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
 {
     Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
@@ -289,6 +290,8 @@ while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
     Console.ForegroundColor = ConsoleColor.DarkMagenta;
     Console.WriteLine("📷 Informations Webcam");
     Console.WriteLine(terrain.RecapitulerInformationsWebcam());
+    terrain.ActiverModeUrgence();
+
     Console.ResetColor();
 
     terrain.ApparaitreMauvaiseHerbe();
@@ -298,41 +301,50 @@ while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
     //Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
     //Terrain terrain1 = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
 
+
+
+    bool choix = false;
+
+
     for (int i = 1; i <= 2; i++)
     {
+        choix = false; // Réinitialise la validité à chaque nouvelle action
 
-        Console.WriteLine("\nQue souhaitez-vous faire ce mois-ci ? (Vous pouvez faire 2 choix)");
-        Console.WriteLine($"Action  : {i} ");
+        Console.WriteLine($"\nQue souhaitez-vous faire ce mois-ci ? (Vous pouvez faire 2 choix) Action : {i}");
         Console.WriteLine("1. Arroser");
         Console.WriteLine("2. Récolter de nouvelles plantes");
         Console.WriteLine("3. Désherber");
         Console.WriteLine("4. Semer");
 
-        ConsoleKeyInfo actionPlante = Console.ReadKey();
-        Console.WriteLine();
+        while (!choix) // On boucle jusqu'à ce que l'utilisateur fasse un choix valide
+        {
+            ConsoleKeyInfo actionPlante = Console.ReadKey(intercept: true);
+            Console.WriteLine();
 
-        if (actionPlante.KeyChar == '1')
-        {
-            planteUtilisee?.Arroser();
+            switch (actionPlante.KeyChar)
+            {
+                case '1':
+                    planteUtilisee?.Arroser();
+                    choix = true;
+                    break;
+                case '2':
+                    planteUtilisee?.Recolter();
+                    choix = true;
+                    break;
+                case '3':
+                    terrain?.Desherber();
+                    choix = true;
+                    break;
+                case '4':
+                    terrain?.Semer(planteUtilisee);
+                    Console.WriteLine("\nVous avez semé la plante");
+                    choix = true;
+                    break;
+                default:
+                    Console.WriteLine("\nChoix invalide, appuyez sur une touche de 1 à 4.");
+                    break;
+            }
         }
-        else if (actionPlante.KeyChar == '2')
-        {
-            planteUtilisee?.Recolter();
-        }
-        else if (actionPlante.KeyChar == '3')
-        {
-            terrain?.Desherber();
-        }
-        else if (actionPlante.KeyChar == '4')
-        {
-            terrain?.Semer(planteUtilisee);
-            Console.WriteLine("\nVous avez semé la plante");
-        }
-        else
-        {
-            Console.WriteLine("\nChoix invalide");
-        }
-
     }
     PasserAuMoisSuivant();
 
