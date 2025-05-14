@@ -12,7 +12,8 @@ public class PlanteAcidulee : Plante
         temperaturePreferemax: 45,
         esperanceVie: 8,
         production: 3,
-        nbrMoisAvantRecolte: 6)
+        nbrMoisAvantRecolte: 6,
+        prixUnitaireDeLaPlante: 10)
     {
         this.Nom = nom;
     }
