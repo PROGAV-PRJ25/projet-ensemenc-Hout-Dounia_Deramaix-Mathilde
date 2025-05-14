@@ -271,6 +271,7 @@ while ((compteurMois >= 2) && !plantesMortes && !partiefinie)
 
     Console.WriteLine();
     Console.WriteLine();
+    Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
 
