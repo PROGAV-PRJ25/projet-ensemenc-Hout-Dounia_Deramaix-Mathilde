@@ -16,6 +16,7 @@ public class Plante
     public int NbrMoisDeCroissance { get; private set; } = 0;
     public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
     public int NbrMoisMaladeConsecutif { get; private set; } = 0;
+    public int NbrMoisAvecMauvaisesHerbesConsecutif { get; private set; } = 0;
 
 
     //-------------  ETAT DE LA PLANTE
@@ -25,6 +26,7 @@ public class Plante
     public bool EstArrosee { get; private set; } = false;
     public bool EstDesherbee { get; private set; } = false;
     public bool EstEntoureeParMauvaisesHerbes { get; private set; } = false;
+    public bool AGrandi { get; private set; } = false;
     public bool EstRecoltable
     {
         get
@@ -49,6 +51,14 @@ public class Plante
         EsperanceDeVie = esperanceVie;
         Production = production;
         NbrMoisAvantRecolte = nbrMoisAvantRecolte;
+    }
+
+    public void Grandir()
+    {
+        if (NbrMoisDeCroissance >= (NbrMoisAvantRecolte / 2))
+        {
+            AGrandi = true;
+        }
     }
 
     public void Semer() //utilisée dans Terrain.cs
@@ -138,6 +148,14 @@ public class Plante
         {
             EstEntoureeParMauvaisesHerbes = true;
         }
+        if (EstEntoureeParMauvaisesHerbes == true)
+        {
+            NbrMoisAvecMauvaisesHerbesConsecutif++;
+        }
+        if (NbrMoisAvecMauvaisesHerbesConsecutif > 3)
+        {
+            EstMorte = true;
+        }
     }
 
     public void EtreMalade()
@@ -149,8 +167,15 @@ public class Plante
         {
             EstMalade = true;
         }
+        if (EstMalade == true)
+        {
+            NbrMoisMaladeConsecutif++;
+        }
+        if (NbrMoisMaladeConsecutif > 2)
+        {
+            EstMorte = true;
+        }
 
-        // NBR DE JOUR MAX AVANT MORT
     }
 
     public override string ToString()

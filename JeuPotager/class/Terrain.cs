@@ -95,31 +95,68 @@ public class Terrain
         this.meteo = nouvelleMeteo;
     }
 
-    public void AfficherParcelle() /// Ajout pour mauvaises herbes, récoltables, malades
+    public void AfficherParcelle()
     {
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] == null)
+                var plante = Plantes[i][j];
+
+                if (plante.EstMorte)
                 {
-                    Console.Write(" 🟫 ");
+                    Console.Write(" 🥀 ");
                 }
-                else if (Plantes[i][j] is MauvaiseHerbe)
+                else if (plante.EstMalade)
                 {
-                    Console.Write(" 🌾 ");
+                    Console.Write(" 🦠 ");
                 }
-                else
+                else if (plante.EstEntoureeParMauvaisesHerbes)
+                {
+                    Console.Write(" 🍀 ");
+                }
+                else if (plante.EstRecoltable)
+                {
+                    Console.Write(" 🍬 ");
+                }
+                else if (plante.AGrandi)
+                {
+                    Console.Write(" 🌿 ");
+                }
+                else if (plante.EstSemee)
                 {
                     Console.Write(" 🌱 ");
                 }
+                if (plante == null)
+                {
+                    Console.Write(" 🟫 ");
+                }
+                else
+                {
+                    Console.Write(" 🟩 ");
+                }
             }
-            Console.WriteLine();
-            Console.WriteLine();
+            Console.WriteLine("\n");
         }
     }
+
     private bool intrusDetecte;
     private bool intemperieDetectee;
+
+    public void SoignerPlantesMalades()
+    {
+        for (int x = 0; x < LongueurTerrain; x++)
+        {
+            for (int y = 0; y < LargeurTerrain; y++)
+            {
+                var plante = Plantes[x][y];
+                if (plante != null && plante.EstMalade)
+                {
+                    plante.EstMalade = false;
+                }
+            }
+        }
+    }
 
 
     private void MettreAJourUrgence()
@@ -262,11 +299,6 @@ public class Terrain
         {
             Console.WriteLine("Attention, des mauvaises herbes envahissent votre terrain !");
         }
-    }
-
-    public void SoignerPlante() // A FAIRE
-    {
-
     }
 
     public void Desherber() // REVOIR MAUVAISES HERBES
