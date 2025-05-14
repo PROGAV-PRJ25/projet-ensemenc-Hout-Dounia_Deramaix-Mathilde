@@ -1,3 +1,4 @@
+// classe heritiere pour terrain
 public class TerrainAcidule : Terrain
 {
     public TerrainAcidule(Meteo meteo)

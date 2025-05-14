@@ -1,3 +1,4 @@
+//classe heritiere pour terrain
 public class TerrainSucre : Terrain
 {
     public TerrainSucre(Meteo meteo)
