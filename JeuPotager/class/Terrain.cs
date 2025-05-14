@@ -6,40 +6,19 @@ public class Terrain
     public int LargeurTerrain { get; set; }
     public string? TypeSol { get; set; }
     public string? HumiditeSol { get; set; }
-
-    // humidité en mettre en int  Pluie=1 unité et bruine=0.5
-    // FAIRE UNE FONCTION
-
-    // La pluie est considérée comme  1 unité,  (pluie violente = 2 unité, pluie bruine = 0.5)
-    // stress hydrique de 0 ≤ niveau < 4; (sol imperméable)
-    //humide de  4 ≤ niveau < 6
-    // très humide de  6 ≤ niveau < 9
-    // humide de  9 ≤ niveau
-
+    public double NiveauHumiditeSol { get; set; }
     public int? CapaciteMaxPlantes { get; set; }
-    public int TemperatureSol { get; set; }
     public double TemperatureConsigne { get; set; }
-    public int NbPlantes { get; private set; }
+    public int NbPlantes { get; private set; } = 0;
     public Meteo meteo { get; set; }
     private Random randomPlacement = new Random();
-
-
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
-
-    public Plante? PlanteActuelle { get; set; }
-
-    public Terrain(string nom, Meteo meteo)
-    {
-        Nom = nom;
-        this.meteo = meteo;
-        Random = new Random();
-        InitialiserTerrain();
-    }
+    public int StockSemisDisponible { get; private set; } = 0;
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
-                   string typeSol, string humiditeSol, int temperatureSol, double temperatureConsigne, Meteo meteo)
+                   string typeSol, string humiditeSol, double niveauHumiditeSol, double temperatureConsigne, Meteo meteo)
     {
         Nom = nom;
         Superficie = superficie;
@@ -47,9 +26,17 @@ public class Terrain
         LargeurTerrain = largeurTerrain;
         TypeSol = typeSol;
         HumiditeSol = humiditeSol;
+        NiveauHumiditeSol = niveauHumiditeSol;
         CapaciteMaxPlantes = longueurTerrain * largeurTerrain;
-        TemperatureSol = temperatureSol;
         TemperatureConsigne = temperatureConsigne;
+        this.meteo = meteo;
+        Random = new Random();
+        InitialiserTerrain();
+    }
+
+    public Terrain(string nom, Meteo meteo)
+    {
+        Nom = nom;
         this.meteo = meteo;
         Random = new Random();
         InitialiserTerrain();
@@ -108,25 +95,7 @@ public class Terrain
         this.meteo = nouvelleMeteo;
     }
 
-
-    public void AfficherParcelleSaine()
-    {
-        for (int i = 0; i < LongueurTerrain; i++)
-        {
-
-            for (int j = 0; j < LargeurTerrain; j++)
-            {
-                if (Plantes[i][j] != null)
-                    Console.Write(" 🌱 ");
-                //else
-                //Console.Write(" 🟫 ");
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-        }
-    }
-
-    public void AfficherParcelle()
+    public void AfficherParcelle() /// Ajout pour mauvaises herbes, récoltables, malades
     {
         for (int i = 0; i < LongueurTerrain; i++)
         {
@@ -180,17 +149,20 @@ public class Terrain
 
 
 
-    private bool SignalerIntrus() => Random.Next(1, 101) <= risquePresenceIntrus;
+    private bool SignalerIntrus()
+    {
+        return Random.Next(1, 101) <= risquePresenceIntrus;
+    }
 
-    private bool SignalerIntemperie() =>
-        meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes;
-
+    private bool SignalerIntemperie()
+    {
+        return meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes;
+    }
 
     public void ActiverModeUrgence()
 
     {
         MettreAJourUrgence();
-
 
         if (intrusDetecte || intemperieDetectee)
         {
@@ -211,7 +183,7 @@ public class Terrain
             Console.ResetColor();
 
             AfficherMenuUrgence();
-            string actionChoisie = Console.ReadLine()!;
+            string actionChoisie = Console.ReadLine()!; //A VOIR
             GererActionUrgence();
         }
 
@@ -222,8 +194,6 @@ public class Terrain
         Console.WriteLine("\nMenu d'Urgence : Que voulez-vous faire ?\n");
         Console.WriteLine("1. Faire du bruit \n");
         Console.WriteLine("2. Déployer une bâche \n");
-        Console.WriteLine("3. Rebouchez les trous \n");
-        Console.WriteLine("4. Creuser une tranchée \n");
 
     }
 
@@ -233,8 +203,6 @@ public class Terrain
         AfficherMenuUrgence();
         while (!actionValide)
         {
-            
-
             ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
             char key = keyInfo.KeyChar;
 
@@ -246,14 +214,6 @@ public class Terrain
                     break;
                 case '2':
                     Console.WriteLine("\nVous déployez une bâche pour protéger vos récoltes");
-                    actionValide = true;
-                    break;
-                case '3':
-                    Console.WriteLine("\nVous rebouchez les trous dans le terrain.");
-                    actionValide = true;
-                    break;
-                case '4':
-                    Console.WriteLine("\nVous creusez une tranchée pour éviter les inondations.");
                     actionValide = true;
                     break;
                 default:
@@ -271,7 +231,6 @@ public class Terrain
                $"Type de sol : {TypeSol}\n" +
                $"Capacité max : {CapaciteMaxPlantes} plantes\n" +
                $"Plantes présentes : {NbPlantes}\n\n";
-        //"Informations météo :\n" + meteo.ToString();
     }
 
 
@@ -285,7 +244,7 @@ public class Terrain
         AfficherParcelle();
     }
 
-    public void ApparaitreMauvaiseHerbe()
+    public void ApparaitreMauvaiseHerbe() // REVOIR BOOLEEN
     {
         bool mauvaisesHerbesAjoutees = false;
         for (int i = 0; i < LongueurTerrain; i++)
@@ -305,8 +264,12 @@ public class Terrain
         }
     }
 
+    public void SoignerPlante() // A FAIRE
+    {
 
-    public void Desherber()
+    }
+
+    public void Desherber() // REVOIR MAUVAISES HERBES
     {
 
         for (int i = 0; i < LongueurTerrain; i++)
@@ -316,13 +279,63 @@ public class Terrain
                 if (Plantes[i][j] is MauvaiseHerbe)
                 {
                     Console.Write("");
-
                 }
             }
         }
         Console.WriteLine("Vous avez desherber vos mauvaises herbe");
-        AfficherParcelleSaine();
+        AfficherParcelle();
     }
 
+    public void CalculerHumiditeSol(Meteo meteo) // A TESTER
+    {
+        switch (meteo.Type)
+        {
+            //Pluie
+            case TypeMeteo.PetitePluie:
+                NiveauHumiditeSol += 0.5;
+                break;
 
+            case TypeMeteo.Pluie:
+                NiveauHumiditeSol += 1;
+                break;
+
+            case TypeMeteo.PluiesBattantes:
+                NiveauHumiditeSol += 1.5;
+                break;
+
+            case TypeMeteo.ForteTempete:
+                NiveauHumiditeSol += 2;
+                break;
+
+            // Pas de pluie
+            case TypeMeteo.Ensoleille:
+                NiveauHumiditeSol -= 2;
+                break;
+            case TypeMeteo.Nuageux:
+                NiveauHumiditeSol -= 1;
+                break;
+        }
+
+        // Actualisation du statut d'humidité du sol pour l'utiliser pour les plantes
+        if (NiveauHumiditeSol < 0) NiveauHumiditeSol = 0;
+
+        if (NiveauHumiditeSol < 4)
+        {
+            HumiditeSol = "stress hydrique";
+        }
+        else if (NiveauHumiditeSol < 6)
+        {
+            HumiditeSol = "humide";
+        }
+        else if (NiveauHumiditeSol < 9)
+        {
+            HumiditeSol = "très humide";
+        }
+        else
+        {
+            HumiditeSol = "inonde";
+        }
+    }
 }
+
+/// OPTION BONUS A FAIRE VOIR CHATTY :)

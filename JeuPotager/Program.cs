@@ -241,6 +241,8 @@ if (toucheTerrain.KeyChar == '2')
 
 
 // Début du jeu 
+
+///Gestion fin du jeu
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
 ConsoleKeyInfo debutJeu = Console.ReadKey();
 
@@ -328,7 +330,7 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
                     choix = true;
                     break;
                 case '2':
-                    planteUtilisee?.Recolter();
+                    /* planteUtilisee?.Recolter(); */
                     choix = true;
                     break;
                 case '3':

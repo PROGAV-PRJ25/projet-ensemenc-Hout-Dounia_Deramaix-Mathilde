@@ -1,8 +1,18 @@
-//classe heritiere pour terrain
 public class TerrainSucre : Terrain
 {
-    public TerrainSucre(Meteo meteo)
-        : base("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40.0, meteo)
+    public TerrainSucre(string nom, Meteo meteo)
+        : base(
+            nom,
+            superficie: 20,
+            longueurTerrain: 4,
+            largeurTerrain: 5,
+            typeSol: "sucre",
+            humiditeSol: "très humide",
+            niveauHumiditeSol: 6,
+            temperatureConsigne: 20.5,
+            meteo)
     {
+        this.Nom = nom;
+        this.meteo = meteo;
     }
 }

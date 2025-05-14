@@ -9,14 +9,12 @@ public class Plante
     public int VitesseCroissance { get; set; }
     public string? BesoinEau { get; set; }
     public string? BesoinLumiere { get; set; }
-    public int NbrDeMoisSansLumConsecutif { get; set; } = 0;
     public double TemperaturePrefereeMin { get; set; }
     public double TemperaturePrefereeMax { get; set; }
     public int EsperanceDeVie { get; set; } // nbr de mois de vie max peu importe les conditions
     public int Production { get; set; }
     public int NbrMoisDeCroissance { get; private set; } = 0;
-    public int NbrMoisAvantRecolte { get; private set; }
-    public int StockSemisDisponible { get; private set; } = 0;
+    public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
     public int NbrMoisMaladeConsecutif { get; private set; } = 0;
 
 
@@ -26,6 +24,7 @@ public class Plante
     public bool EstSemee { get; private set; } = false;
     public bool EstArrosee { get; private set; } = false;
     public bool EstDesherbee { get; private set; } = false;
+    public bool EstEntoureeParMauvaisesHerbes { get; private set; } = false;
     public bool EstRecoltable
     {
         get
@@ -35,7 +34,7 @@ public class Plante
     }
 
     public Plante(string nom, string nature, string solPref, double espacement, double surfaceNecessaire,
-    int vitesseCroissance, string besoinEau, int nbrDeMoisSansLumConsecutif, double temperaturePreferemin, double temperaturePreferemax,
+    int vitesseCroissance, string besoinEau, double temperaturePreferemin, double temperaturePreferemax,
     int esperanceVie, int production, int nbrMoisAvantRecolte)
     {
         Nom = nom;
@@ -45,7 +44,6 @@ public class Plante
         SurfaceNecessaire = surfaceNecessaire;
         VitesseCroissance = vitesseCroissance;
         BesoinEau = besoinEau;
-        NbrDeMoisSansLumConsecutif = nbrDeMoisSansLumConsecutif;
         TemperaturePrefereeMin = temperaturePreferemin;
         TemperaturePrefereeMax = temperaturePreferemax;
         EsperanceDeVie = esperanceVie;
@@ -53,13 +51,15 @@ public class Plante
         NbrMoisAvantRecolte = nbrMoisAvantRecolte;
     }
 
-
     public void Semer() //utilisée dans Terrain.cs
     {
         EstSemee = true;
     }
 
-
+    public void Desherber() //utilisée dans Terrain.cs
+    {
+        EstEntoureeParMauvaisesHerbes = false;
+    }
 
     public void Arroser()
     {
@@ -79,21 +79,20 @@ public class Plante
     private bool ConditionsRespectees(string typeSol, string humiditeTerrain, string ensoleillement, int temperatureActuelle)
     {
         int totalConditions = 4;
-        int conditionsOk = 0;
+        int nbrConditionsOK = 0;
 
-        if (SolPrefere == typeSol) conditionsOk++;
-        if (BesoinEau == humiditeTerrain) conditionsOk++;
-        if (BesoinLumiere == ensoleillement) conditionsOk++;
-        if (temperatureActuelle >= TemperaturePrefereeMin && temperatureActuelle <= TemperaturePrefereeMax) conditionsOk++;
+        if (SolPrefere == typeSol) nbrConditionsOK++;
+        if (BesoinEau == humiditeTerrain) nbrConditionsOK++;
+        if (BesoinLumiere == ensoleillement) nbrConditionsOK++;
+        if (temperatureActuelle >= TemperaturePrefereeMin && temperatureActuelle <= TemperaturePrefereeMax) nbrConditionsOK++;
 
-        bool respectees = conditionsOk > totalConditions / 2;
+        bool respectees = nbrConditionsOK >= totalConditions / 2;
         EstMorte = !respectees;
-
         return respectees;
     }
 
 
-    public void Croissance(string typeSol, string humiditeTerrain, string ensoleillement, string richesseSol, int temperatureActuelle, Meteo meteo)
+    public void Croissance(string typeSol, string humiditeTerrain, string ensoleillement, int temperatureActuelle, Meteo meteo)
     {
         if (EstSemee && EstArrosee)
         {
@@ -101,7 +100,7 @@ public class Plante
             if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
             {
                 // Réduit croissance sous conditions extrêmes
-                NbrMoisDeCroissance = Math.Max(0, NbrMoisDeCroissance - 1); // réduire un mois de croissance
+                NbrMoisDeCroissance = Math.Abs(NbrMoisDeCroissance - 2); // réduire un mois de croissance
             }
             if (ConditionsRespectees(typeSol, humiditeTerrain, ensoleillement, temperatureActuelle))
             {
@@ -109,14 +108,10 @@ public class Plante
                 VitesseCroissance++;
             }
         }
-        else if (EstSemee)
-        {
-            Console.WriteLine($"Besoin d’eau pour pousser. (classe Plante.cs)");
-        }
     }
 
 
-    public void Recolter()
+    /* public void Recolter() ////// A mettre dans terrain
     {
         if (EstRecoltable)
         {
@@ -132,31 +127,31 @@ public class Plante
             Console.WriteLine($"N’est pas encore prête à être récoltée (classe Plante.cs)");
             Console.ResetColor();
         }
-    }
-    public double ProbabiliteContamination()
+    } */
+
+    public void ApparaitreMauvaiseHerbe()
     {
         Random random = new Random();
-        return random.Next(0, 100);  // génère une valeur entre 0 et 99
-    }
+        double probabiliteMauvaisesHerbes = random.Next(0, 100);  // génère une valeur entre 0 et 99
 
+        if (probabiliteMauvaisesHerbes < 30)  // Si la proba est inférieure à 30%
+        {
+            EstEntoureeParMauvaisesHerbes = true;
+        }
+    }
 
     public void EtreMalade()
     {
-        double probabilitéContamination = ProbabiliteContamination();
+        Random random = new Random();
+        double probabilitéContamination = random.Next(0, 100);  // génère une valeur entre 0 et 99
         //verif contamination
-        if (probabilitéContamination < 20)  // Si la proba est inférieure à 20%
+        if (probabilitéContamination < 10)  // Si la proba est inférieure à 20%
         {
             EstMalade = true;
         }
 
-        // CONTAMINATATION
         // NBR DE JOUR MAX AVANT MORT
-
     }
-
-    //DESHERBER 
-
-
 
     public override string ToString()
     {

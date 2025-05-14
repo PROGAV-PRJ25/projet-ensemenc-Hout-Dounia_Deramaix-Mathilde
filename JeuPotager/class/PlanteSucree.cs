@@ -8,7 +8,6 @@ public class PlanteSucree : Plante
         surfaceNecessaire: 0.3,
         vitesseCroissance: 2,
         besoinEau: "Très humide",
-        nbrDeMoisSansLumConsecutif: 2,
         temperaturePreferemin: 15,
         temperaturePreferemax: 25,
         esperanceVie: 6,
