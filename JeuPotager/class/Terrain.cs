@@ -17,6 +17,7 @@ public class Terrain
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
     public int? StockTotalDeSemis { get; private set; }
+    public bool EstRecouvertDePlantesMortes { get; set; } = false;
 
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,
@@ -45,6 +46,23 @@ public class Terrain
         InitialiserTerrain();
     }
 
+    public void EtreMort()
+    {
+        int compteurPlantesMortes = 0 ; 
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                var plante = Plantes[i][j];
+                if (plante!.EstMorte == true )
+                    compteurPlantesMortes++ ; 
+                if (compteurPlantesMortes == NbPlantes)
+                    EstRecouvertDePlantesMortes = true ; 
+            }
+        }
+        Console.WriteLine("Les plantes ont été arrosées");
+    }
+
     private void InitialiserTerrain()
     {
         Plantes = new List<List<Plante?>>();
@@ -57,6 +75,19 @@ public class Terrain
             }
             Plantes.Add(ligne);
         }
+    }
+
+    public void Arroser()
+    {
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                var plante = Plantes[i][j];
+                plante!.Arroser();
+            }
+        }
+        Console.WriteLine("Les plantes ont été arrosées");
     }
 
     public bool AddPlante(Plante plante)
@@ -310,10 +341,11 @@ public class Terrain
 
     public override string ToString()
     {
-        return $"Terrain {Nom} ({Superficie} m²)\n" +
-               $"Type de sol : {TypeSol}\n" +
-               $"Capacité max : {CapaciteMaxPlantes} plantes\n" +
-               $"Plantes présentes : {NbPlantes}\n\n";
+        return
+               $"       Terrain {Nom} ({Superficie} m²)\n" +
+               $"       Type de sol : {TypeSol}\n" +
+               $"       Capacité max : {CapaciteMaxPlantes} plantes\n" +
+               $"       Plantes présentes : {NbPlantes}\n\n";
     }
 
 
@@ -337,7 +369,6 @@ public class Terrain
                 plante.ApparaitreMauvaiseHerbe();
             }
         }
-        AfficherParcelle();
     }
 
     public void Desherber()
@@ -351,6 +382,25 @@ public class Terrain
             }
         }
         Console.WriteLine("Vous avez desherber vos mauvaises herbes ! ");
+        AfficherParcelle();
+    }
+
+    public void TomberMalade()
+    {
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                var plante = Plantes[i][j];
+                plante.EtreMalade();
+            }
+        }
+    }
+
+    public void UtiliserFonctionnalitesAleatoire()
+    {
+        ApparaitreMauvaiseHerbe();
+        TomberMalade();
         AfficherParcelle();
     }
 

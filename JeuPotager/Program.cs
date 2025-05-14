@@ -91,11 +91,9 @@ string[] moisSuivant = {
 
 int tailleCartePays = 11;
 int tailleCarteTerrain = 13;
-bool plantesMortes = false;
 bool partiefinie = false;
-int compteurMois = 0;
+int compteurMois = 1;
 string paysSelectionne = "";
-string terrainSelectionne = "";
 
 void PasserAuMoisSuivant()
 {
@@ -121,18 +119,19 @@ void PasserAuMoisSuivant()
 
 // Affichage de bienvenue
 Console.WriteLine();
-
+Console.ForegroundColor = ConsoleColor.Blue;
 for (int i = 0; i < bienvenueENSC.Length; i++)
 {
     Console.Write(bienvenueENSC[i]);
     Console.WriteLine();
 }
-
+Console.ResetColor();
 Console.WriteLine();
 Console.WriteLine();
+Console.ForegroundColor = ConsoleColor.Blue;
 Console.WriteLine(" CONSIGNE : ");
+Console.ResetColor();
 Console.WriteLine("🌱 Tu prends les commandes d’un potager dans un pays de ton choix ! À toi de semer, arroser, désherber, récolter, protéger... Mais aussi de faire face à la météo capricieuse et aux visiteurs indésirables !\n");
-
 Console.ForegroundColor = ConsoleColor.Blue;
 Console.WriteLine("🎮 Objectifs :\n");
 Console.ResetColor();
@@ -141,10 +140,12 @@ Console.WriteLine("- Planter une grande variété de semis et assurer leur bon d
 Console.WriteLine("- Surveiller leur état de santé : si plus de 50% des conditions idéales ne sont pas réunies… elles risquent de mourir 😢");
 Console.WriteLine("- Attention : certaines plantes peuvent tomber malades de manière imprévisible 🦠");
 Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événements inattendus peuvent tout bouleverser 🌪️🐰\n");
-
-Console.WriteLine("⏱️ Deux modes de jeu :\n appuyez sur i pour plus d'informations");
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("⏱️ Deux modes de jeu :\n");
+Console.ResetColor();
+Console.WriteLine("Appuyez sur i pour plus d'informations sinon appuyez sur entrée");
 ConsoleKeyInfo informations = Console.ReadKey();
-while (informations.KeyChar != 'i')
+while ((informations.KeyChar != 'i') && (informations.Key != ConsoleKey.Enter))
 {
     Console.WriteLine();
     Console.WriteLine("Erreur. Réessayez.");
@@ -210,45 +211,36 @@ while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
 }
 
 Terrain? terrain = null!;
-Plante? planteUtilisee = null;
+Plante? planteUtilisee = null!;
 Meteo meteo = new Meteo();
 
 if (toucheTerrain.KeyChar == '1')
 {
-    terrainSelectionne = "Langue de chat";
-    terrain = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
+    terrain = TerrainFactory.CreerTerrainAcidule("langueDeChat", meteo);
     meteo = new Meteo(compteurMois, terrain);
     terrain.meteo = meteo;
-    Console.WriteLine();
-    planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
-    //terrain.Semer(new Plante("langue De Chat", "acidulée", "", 1, 1, "", "", "", "", 2, 2, 2));
-
-
     pays.AddTerrain(terrain);
-    Console.WriteLine($"Vous avez choisi le terrain acidulé!");
-    Console.WriteLine(terrain.ToString());
+    planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
+    Console.WriteLine($"Vous avez choisi le terrain acidulé! \n");
 }
 if (toucheTerrain.KeyChar == '2')
 {
-    /*  terrainSelectionne = "Dragibus";
-     Meteo meteo2 = new Meteo(compteurMois, terrain); // témpérature consigne terrain Langue de chat = 20°C
-     meteo2.AfficherConditions();
-     terrain = new Terrain("Dragibus", 20, 4, 5, "sucré", "modéré", 20, 40, meteo2);
-     planteUtilisee = new Plante("Dragibus", "sucrée", "", 2.5, 10, "", "", "", "", 20, 5, 15);
-     terrain.Semer(planteUtilisee);
-     pays.AddTerrain(terrain);
-     Console.WriteLine();
-     Console.WriteLine($"Vous avez choisi le terrain sucré {terrainSelectionne}"); */
+    terrain = TerrainFactory.CreerTerrainSucre("Dragibus", meteo);
+    meteo = new Meteo(compteurMois, terrain);
+    terrain.meteo = meteo;
+    pays.AddTerrain(terrain);
+    planteUtilisee = PlanteFactory.CreerPlanteSucree("Dragibus");
+    Console.WriteLine($"Vous avez choisi le terrain acidulé! \n");
 }
 
-
-
-
-// Début du jeu 
-
-///Gestion fin du jeu
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
 ConsoleKeyInfo debutJeu = Console.ReadKey();
+while (debutJeu.Key != ConsoleKey.Enter)
+{
+    Console.WriteLine();
+    Console.WriteLine("Erreur. Réessayez.");
+    debutJeu = Console.ReadKey();
+}
 
 do
 {
@@ -260,14 +252,15 @@ do
     }
     Console.WriteLine();
     meteo.AfficherConditions();
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("🧑‍🌾 Informations du terrain : \n");
+    Console.ResetColor();
+    terrain.ToString();
     terrain.Semer(planteUtilisee);
     PasserAuMoisSuivant();
-
 }
 while (compteurMois == 2);
-
-
-while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
+while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
 {
     Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
@@ -275,39 +268,24 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
         Console.Write(moisSuivant[i]);
         Console.WriteLine();
     }
-
-    Console.WriteLine();
-    Console.WriteLine();
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
 
-    Meteo nouvelleMeteo = new Meteo(compteurMois, terrain);
-    terrain.MiseAJourMeteo(nouvelleMeteo);
+    Meteo nouvelleMeteo = new Meteo(compteurMois, terrain!);
+    terrain!.MiseAJourMeteo(nouvelleMeteo);
     nouvelleMeteo.AfficherConditions();
-
-    //terrain.ApparaitreMauvaiseHerbe();
-
     Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("🌿 Informations Terrain");
+    Console.WriteLine("🧑‍🌾 Informations du terrain : \n");
     Console.ResetColor();
-    Console.WriteLine(terrain.ToString());
+    terrain.ToString();
 
     Console.ForegroundColor = ConsoleColor.DarkMagenta;
     Console.WriteLine("📷 Informations Webcam");
-    Console.WriteLine(terrain.RecapitulerInformationsWebcam());
+    terrain.RecapitulerInformationsWebcam();
     terrain.ActiverModeUrgence();
-
     Console.ResetColor();
-
-    terrain.ApparaitreMauvaiseHerbe();
-    terrain.AfficherParcelle();
-
-    //Meteo meteo = new Meteo();
-    //Plante planteLangueChat = new Plante("langueDeChat", "anuelle", "", 1, 1, "", "", "", "", 2, 2, 2);
-    //Terrain terrain1 = new Terrain("Langue de chat", 20, 4, 5, "acidulé", "humide", 10, 20.5, meteo);
-
-
+    terrain.UtiliserFonctionnalitesAleatoire();
 
     bool choix = false;
 
@@ -330,19 +308,19 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
             switch (actionPlante.KeyChar)
             {
                 case '1':
-                    planteUtilisee?.Arroser();
+                    terrain!.Arroser();
                     choix = true;
                     break;
                 case '2':
-                    /* planteUtilisee?.Recolter(); */
+                    terrain!.RecolterPlantes();
                     choix = true;
                     break;
                 case '3':
-                    terrain?.Desherber();
+                    terrain!.Desherber();
                     choix = true;
                     break;
                 case '4':
-                    terrain?.Semer(planteUtilisee);
+                    terrain!.Semer(planteUtilisee);
                     Console.WriteLine("\nVous avez semé la plante");
                     choix = true;
                     break;
@@ -353,32 +331,14 @@ while ((compteurMois >= 1) && !plantesMortes && !partiefinie)
         }
     }
     PasserAuMoisSuivant();
-
-
-
-
-    //coder jeu
-    /* if (touchePartie.Key == ConsoleKey.Enter)
-    {
-        plantesMortes = true;
-    }
-    else if (touchePartie.Key == ConsoleKey.Spacebar)
-    {
-        partiefinie = true;
-    }
-    */
-
-
-
-    //Fin de la partie
-    if (plantesMortes == true)
-    {
-        Console.WriteLine();
-        Console.WriteLine("PERDU !");
-    }
-    else if (partiefinie == true)
-    {
-        Console.WriteLine();
-        Console.WriteLine("Dommage vous étiez en bonne voie !");
-    }
+}
+if (terrain.EstRecouvertDePlantesMortes == true)
+{
+    Console.WriteLine();
+    Console.WriteLine("PERDU !");
+}
+else if (partiefinie == true)
+{
+    Console.WriteLine();
+    Console.WriteLine("Dommage vous étiez en bonne voie !");
 }
