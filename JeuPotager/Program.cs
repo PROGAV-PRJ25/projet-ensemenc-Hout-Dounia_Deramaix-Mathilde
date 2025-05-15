@@ -251,12 +251,14 @@ do
         Console.WriteLine();
     }
     Console.WriteLine();
+    terrain.AfficherLeSolde();
     meteo.AfficherConditions();
+    terrain.Semer(planteUtilisee);
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("🧑‍🌾 Informations du terrain : \n");
     Console.ResetColor();
-    terrain.ToString();
-    terrain.Semer(planteUtilisee);
+    Console.WriteLine(terrain.ToString());
+    terrain.AfficherParcelle();
     PasserAuMoisSuivant();
 }
 while (compteurMois == 1);
@@ -272,34 +274,40 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
 
+    terrain.AfficherLeSolde();
+
     Meteo nouvelleMeteo = new Meteo(compteurMois, terrain!);
     terrain!.MiseAJourMeteo(nouvelleMeteo);
     nouvelleMeteo.AfficherConditions();
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("🧑‍🌾 Informations du terrain : \n");
     Console.ResetColor();
-    terrain.ToString();
+    Console.WriteLine(terrain.ToString());
 
     Console.ForegroundColor = ConsoleColor.DarkMagenta;
     Console.WriteLine("📷 Informations Webcam");
     terrain.RecapitulerInformationsWebcam();
     terrain.ActiverModeUrgence();
     Console.ResetColor();
-    terrain.UtiliserFonctionnalitesAleatoire();
+    terrain.UtiliserFonctionnalitesAleatoire(meteo);
 
 
     terrain.EtreMort();
 
     bool choix;
-    for (int i = 1; i <= 2; i++)
+    for (int i = 1; i <= 3; i++)
     {
         choix = false; // Réinitialise la validité à chaque nouvelle action
 
-        Console.WriteLine($"\nQue souhaitez-vous faire ce mois-ci ? (Vous pouvez faire 2 choix) Action : {i}");
+        Console.WriteLine($"\nQue souhaitez-vous faire ce mois-ci ? (Vous pouvez faire 3 choix) Action : {i}");
         Console.WriteLine("1. Arroser");
         Console.WriteLine("2. Récolter de nouvelles plantes");
         Console.WriteLine("3. Désherber");
         Console.WriteLine("4. Semer");
+        Console.WriteLine("5. Soigner");
+        Console.WriteLine("6. Déraciner les plantes fanées");
+        Console.WriteLine("7. Vendre des semis");
+        Console.WriteLine("8. Ne rien faire");
 
         while (!choix) // On boucle jusqu'à ce que l'utilisateur fasse un choix valide
         {
@@ -322,21 +330,38 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
                     break;
                 case '4':
                     terrain!.Semer(planteUtilisee);
-                    Console.WriteLine("\nVous avez semé la plante");
+                    choix = true;
+                    break;
+                case '5':
+                    terrain!.SoignerPlantesMalades();
+                    choix = true;
+                    break;
+                case '6':
+                    terrain!.DeracinerPlantesMortes();
+                    choix = true;
+                    break;
+                case '7':
+                    terrain!.VendreSemis(planteUtilisee);
+                    choix = true;
+                    break;
+                case '8':
                     choix = true;
                     break;
                 default:
-                    Console.WriteLine("\nChoix invalide, appuyez sur une touche de 1 à 4.");
+                    Console.WriteLine("\nChoix invalide, appuyez sur une touche de 1 à 8.\n");
                     break;
             }
+            terrain.AfficherParcelle();
         }
     }
+    Console.WriteLine(terrain.AfficherResumeTerrain());
+    terrain.CroissancePlantes(terrain.TypeSol, terrain.HumiditeSol, meteo.Temperature, meteo);
     PasserAuMoisSuivant();
 }
 if (terrain.EstRecouvertDePlantesMortes == true)
 {
     Console.WriteLine();
-    Console.WriteLine("PERDU !");
+    Console.WriteLine("PERDU ! Toutes vos plantes sont mortes !");
 }
 else if (partiefinie == true)
 {

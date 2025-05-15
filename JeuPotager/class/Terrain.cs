@@ -12,7 +12,7 @@ public class Terrain
     public int NbPlantes { get; private set; } = 0;
     public double PiecesOrEnChocolat { get; private set; } = 0;
     public Meteo meteo { get; set; }
-    private Random randomPlacement = new Random();
+    /*     private Random randomPlacement = new Random(); */
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
@@ -61,7 +61,7 @@ public class Terrain
         if (compteurPlantesMortes == NbPlantes)
         {
             EstRecouvertDePlantesMortes = true;
-            Console.WriteLine("Les plantes sont mortes");
+            Console.WriteLine("Toutes les plantes du terrain sont mortes ... 😢");
         }
     }
 
@@ -81,59 +81,63 @@ public class Terrain
 
     public void Arroser()
     {
+        bool auMoinsUneArrosee = false;
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
                 if (plante != null && plante.EstSemee)
-                    plante!.Arroser();
+                {
+                    plante.Arroser();
+                    auMoinsUneArrosee = true;
+                }
             }
         }
-        NiveauHumiditeSol++;    // Humidité ajouté avec l'arrosage
-        Console.WriteLine("Les plantes ont été arrosées");
+        if (auMoinsUneArrosee)
+        {
+            Console.WriteLine("\n   🚿 Vous avez arrosé vos plantes !\n");
+            NiveauHumiditeSol++; // Humidité ajoutée uniquement si une plante a été arrosée
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Aucune plante n'est prête à être arrosée.");
+            Console.ResetColor();
+        }
     }
-
     public bool Semer(Plante plante)
     {
-        while (NbPlantes < CapaciteMaxPlantes && StockTotalDeSemis > 0)
+        bool auMoinsUneSemee = false;
+        if (StockTotalDeSemis > 0)
         {
-            for (int x = 0; x < LongueurTerrain; x++)
+            while (NbPlantes < CapaciteMaxPlantes && StockTotalDeSemis > 0)
             {
-                for (int y = 0; y < LargeurTerrain; y++)
+                for (int x = 0; x < LongueurTerrain; x++)
                 {
-                    if (Plantes[x][y] == null)
+                    for (int y = 0; y < LargeurTerrain; y++)
                     {
-                        Plantes[x][y] = plante.Cloner();
-                        Plantes[x][y]!.Semer();
-                        NbPlantes++;
-                        StockTotalDeSemis--;
+                        if (Plantes[x][y] == null)
+                        {
+                            Plantes[x][y] = plante.Cloner();
+                            Plantes[x][y]!.Semer();
+                            NbPlantes++;
+                            StockTotalDeSemis--;
+                        }
                     }
                 }
             }
         }
-        AfficherParcelle();
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("  Vous n'avez plus assez de semis disponible ...\n");
+            Console.ResetColor();
+        }
+        if (auMoinsUneSemee)
+            Console.WriteLine("  🧑‍🌾 Vous avez semé votre terrain ...\n");
         return false; // terrain plein
     }
-
-    public bool RemovePlante(Plante plante)
-    {
-        for (int x = 0; x < LongueurTerrain; x++)
-        {
-            for (int y = 0; y < LargeurTerrain; y++)
-            {
-                if (Plantes[x][y] == plante)
-                {
-                    //Plantes[x][y] = null;
-                    plante.EstMorte = true;
-                    NbPlantes--;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
     public void MiseAJourMeteo(Meteo nouvelleMeteo)
     {
@@ -191,16 +195,27 @@ public class Terrain
 
     public void SoignerPlantesMalades()
     {
+        bool auMoinsUneSoignee = false;
         for (int x = 0; x < LongueurTerrain; x++)
         {
             for (int y = 0; y < LargeurTerrain; y++)
             {
                 var plante = Plantes[x][y];
-                if (plante != null && plante.EstMalade)
+                if (plante != null && plante.EstMalade && plante.EstSemee)
                 {
                     plante.EstMalade = false;
+                    plante.NbrMoisMaladeConsecutif = 0;
+                    auMoinsUneSoignee = true;
                 }
             }
+        }
+        if (auMoinsUneSoignee)
+            Console.WriteLine("\n   💉 Vous avez soigné vos plantes d'une terrible maladie !\n");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Aucune plante n'est prête à être soignée.");
+            Console.ResetColor();
         }
     }
 
@@ -243,9 +258,7 @@ public class Terrain
     }
 
     public void ActiverModeUrgence()
-
     {
-
         if (intrusDetecte || intemperieDetectee)
         {
 
@@ -263,86 +276,191 @@ public class Terrain
             }
 
             Console.ResetColor();
-
-            AfficherMenuUrgence();
-            //GererActionUrgence();
-            bool bruitFait = GererActionUrgence();
-            GérerConséquencesUrgence(bruitFait);
-
+            var (bruitFait, pareVentMis) = GererActionUrgence();
+            GérerConséquencesUrgence(bruitFait, pareVentMis);
         }
-
+        intrusDetecte = false;
+        intemperieDetectee = false;
     }
 
-    private void AfficherMenuUrgence()
+    private (bool bruitFait, bool pareVentMis) GererActionUrgence()
     {
-        Console.WriteLine("\nMenu d'Urgence : Que voulez-vous faire ?\n");
-        Console.WriteLine("1. Faire du bruit \n");
-        Console.WriteLine("2. Déployer un pare-vent \n");
-
-    }
-
-    private bool GererActionUrgence()
-    {
-        bool actionValide = false;
         bool bruitFait = false;
-        while (!actionValide)
-        {
-            ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
-            char key = keyInfo.KeyChar;
+        bool pareVentMis = false;
 
-            switch (key)
+        while (true)
+        {
+            Console.WriteLine("\nMenu d'Urgence : Que voulez-vous faire ?");
+            Console.WriteLine("1. Faire du bruit 🗣️");
+            Console.WriteLine("2. Déployer un pare-vent 🪟");
+            Console.WriteLine("3. Ne rien faire");
+
+            ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+            switch (keyInfo.KeyChar)
             {
                 case '1':
-                    Console.WriteLine("\nVous faites du bruit pour éloigner les intrus");
+                    Console.WriteLine("\nVous faites du bruit pour éloigner les intrus.");
                     bruitFait = true;
-                    actionValide = true;
-                    break;
+                    return (bruitFait, pareVentMis);
                 case '2':
-                    Console.WriteLine("\nVous déployez une bâche pour protéger vos récoltes");
-                    actionValide = true;
-                    break;
+                    Console.WriteLine("\nVous déployez un pare-vent pour protéger vos récoltes.");
+                    pareVentMis = true;
+                    return (bruitFait, pareVentMis);
+                case '3':
+                    Console.WriteLine("\nVous ne faites rien.");
+                    return (false, false);
                 default:
-                    Console.WriteLine("\nOption invalide.");
+                    Console.WriteLine("\nOption invalide. Veuillez réessayer.");
                     break;
             }
         }
-        return bruitFait;
     }
 
-    private void GérerConséquencesUrgence(bool bruitFait)
+    private void GérerConséquencesUrgence(bool bruitFait, bool pareVentMis)
     {
+        // === Cas des intrus ===
         if (!bruitFait && intrusDetecte)
         {
+            bool planteTrouvee = false;
 
-            int x = Random.Next(0, LargeurTerrain);
-            int y = Random.Next(0, LongueurTerrain);
+            for (int tentative = 0; tentative < 100; tentative++)
+            {
+                int x = Random.Next(0, LongueurTerrain);
+                int y = Random.Next(0, LargeurTerrain);
 
-            if ((Plantes[x][y] != null) && !Plantes[x][y]!.EstMorte)
+                if (Plantes[x][y] != null && Plantes[x][y]!.EstSemee && !Plantes[x][y]!.EstMorte)
+                {
+                    Plantes[x][y]!.EstMorte = true;
+                    planteTrouvee = true;
 
-                Plantes[x][y]!.EstMorte = true;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nUne plante est morte dans votre jardin à cause des intrus...");
+                    Console.ResetColor();
+                    break;
+                }
+            }
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\nUne plante est morte dans votre jardin...");
-            Console.ResetColor();
+            if (!planteTrouvee)
+            {
+                Console.WriteLine("\n Aucune plante n'est présente sur le terrain.");
+            }
+        }
 
-            Console.WriteLine("\nÉtat actuel du terrain :\n");
-            AfficherParcelle();
+        // === Cas de l’intempérie ===
+        if (!pareVentMis && intemperieDetectee)
+        {
+            bool planteTrouvee = false;
+
+            for (int tentative = 0; tentative < 100; tentative++)
+            {
+                int x = Random.Next(0, LongueurTerrain);
+                int y = Random.Next(0, LargeurTerrain);
+
+                if (Plantes[x][y] != null && Plantes[x][y]!.EstSemee && !Plantes[x][y]!.EstMorte)
+                {
+                    Plantes[x][y] = null;
+                    NbPlantes--;
+                    planteTrouvee = true;
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nUne plante a été déracinée dans votre jardin à cause du vent...");
+                    Console.ResetColor();
+                    break;
+                }
+            }
+
+            if (!planteTrouvee)
+            {
+                Console.WriteLine("\n Aucune plante n'est présente sur le terrain.");
+            }
         }
     }
 
-
-
     public override string ToString()
     {
-        return
-               $"       Terrain {Nom} ({Superficie} m²)\n" +
+        return $"       Terrain {Nom} ({Superficie} m²)\n" +
                $"       Type de sol : {TypeSol}\n" +
                $"       Capacité max : {CapaciteMaxPlantes} plantes\n" +
-               $"       Plantes présentes : {NbPlantes}\n\n";
+               $"       Plantes présentes : {NbPlantes}\n" +
+               $"       Stock de semis : {StockTotalDeSemis}\n";
     }
 
+    public void AfficherLeSolde()
+    {
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine($"   💰  Solde actuel du compte : {PiecesOrEnChocolat} pièces d'or en chocolat");
+        Console.ResetColor();
+    }
 
+    public void DeracinerPlantesMortes()
+    {
+        bool auMoinsUneDeracinee = false;
+        for (int x = 0; x < LongueurTerrain; x++)
+        {
+            for (int y = 0; y < LargeurTerrain; y++)
+            {
+                var plante = Plantes[x][y];
+                if (plante != null && plante.EstMorte && plante.EstSemee)
+                {
+                    plante.RetirerPlanteMorte();
+                    Plantes[x][y] = null;
+                    NbPlantes--;
+                    auMoinsUneDeracinee = true;
+                }
+            }
+        }
+        EstRecouvertDePlantesMortes = false;
+        if (auMoinsUneDeracinee)
+            Console.WriteLine("\n   🥀 Vous avez retiré toutes les plantes mortes de votre terrain !\n");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Aucune plante n'est prête à être déracinée.");
+            Console.ResetColor();
+        }
+    }
 
+    public string AfficherResumeTerrain()
+    {
+        int nbrMalades = 0;
+        int nbrMauvaisesHerbes = 0;
+        int nbrMortes = 0;
+        int nbrGrandes = 0;
+        int nbrrecoltable = 0;
+        int placeDisponible = 0;
+
+        for (int i = 0; i < LongueurTerrain; i++)
+        {
+            for (int j = 0; j < LargeurTerrain; j++)
+            {
+                var plante = Plantes[i][j];
+                if (plante == null)
+                    placeDisponible++;
+                else if (plante != null && plante.EstSemee)
+                {
+                    if (plante.EstMorte)
+                        nbrMortes++;
+                    else if (plante.EstMalade)
+                        nbrMalades++;
+                    else if (plante.EstEntoureeParMauvaisesHerbes)
+                        nbrMauvaisesHerbes++;
+                    else if (plante.EstRecoltable)
+                        nbrrecoltable++;
+                    else if (plante.AGrandi)
+                        nbrGrandes++;
+                }
+            }
+        }
+        string resume = $"   📋 Résumé du terrain pour le mois :\n" +
+                        $"       🥀 {nbrMortes} plante(s) morte(s).\n" +
+                        $"       🦠 {nbrMalades} plante(s) malade(s).\n" +
+                        $"       🍀 {nbrMauvaisesHerbes} plante(s) entourée(s) de mauvaises herbes.\n" +
+                        $"       🍬 {nbrrecoltable} plante(s) récoltable(s).\n" +
+                        $"       🌿 {nbrGrandes} plante(s) en croissance avancée.\n" +
+                        $"       🌱 {NbPlantes} plante(s) présente(s).\n" +
+                        $"       🟫 {placeDisponible} place(s) disponicle(s).\n";
+        return resume;
+    }
 
     public void ApparaitreMauvaiseHerbe()
     {
@@ -351,7 +469,7 @@ public class Terrain
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                if (plante != null)
+                if (plante != null && plante.EstSemee)
                     plante.ApparaitreMauvaiseHerbe();
             }
         }
@@ -359,35 +477,48 @@ public class Terrain
 
     public void Desherber()
     {
+        bool auMoinsUneDesherbee = false;
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                if (plante != null)
+                if (plante != null && plante.EstSemee && plante.EstEntoureeParMauvaisesHerbes)
+                {
                     plante.Desherber();
+                    auMoinsUneDesherbee = true;
+                }
             }
         }
-        Console.WriteLine("Vous avez desherber vos mauvaises herbes ! ");
-        AfficherParcelle();
+        if (auMoinsUneDesherbee)
+            Console.WriteLine(" 🍀 Vous avez retiré les mauvaises herbes de vos plantes");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Aucune mauvaise herbe n'est prête à être désherbé.");
+            Console.ResetColor();
+        }
     }
 
     public void TomberMalade()
     {
-        Random rnd = new Random();
+
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                if (Plantes[i][j] != null)
-                    Plantes[i][j]!.EtreMalade(rnd);  // partage la même instance !
+                Random rnd = new Random();
+                var plante = Plantes[i][j];
+                if (plante != null && plante.EstSemee)
+                    plante!.EtreMalade(rnd);
             }
         }
     }
-    public void UtiliserFonctionnalitesAleatoire()
+    public void UtiliserFonctionnalitesAleatoire(Meteo meteo)
     {
         ApparaitreMauvaiseHerbe();
         TomberMalade();
+        CalculerHumiditeSol(meteo);
         AfficherParcelle();
     }
 
@@ -442,8 +573,25 @@ public class Terrain
         }
     }
 
+    public void CroissancePlantes(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
+    {
+        for (int x = 0; x < LongueurTerrain; x++)
+        {
+            for (int y = 0; y < LargeurTerrain; y++)
+            {
+                var plante = Plantes[x][y];
+                if (plante != null && !plante.EstMorte && plante.EstSemee)
+                {
+                    plante.Croissance(typeSol, humiditeTerrain, temperatureActuelle, meteo);
+                }
+            }
+        }
+    }
+
+
     public void RecolterPlantes()
     {
+        bool auMoinsUneRecoltee = false;
         int totalRecolte = 0;
 
         for (int i = 0; i < LongueurTerrain; i++)
@@ -451,19 +599,19 @@ public class Terrain
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                if (plante != null && plante.EstRecoltable)
+                if (plante != null && plante.EstRecoltable && plante.EstSemee)
                 {
                     int quantite = plante.RecolterPlante();
                     totalRecolte += quantite;
                     StockTotalDeSemis += quantite;
+                    Plantes[i][j] = null; //pour revenir à un terrain vierge
+                    auMoinsUneRecoltee = true;
+                    Console.WriteLine("\n   🧺 Vous avez récolté vos plantes !\n");
                 }
             }
         }
-
-        if (totalRecolte > 0)
-        {
-            Console.WriteLine($"Stock total après récolte : {StockTotalDeSemis}");
-        }
+        if (auMoinsUneRecoltee)
+            Console.WriteLine("\n   🧺 Vous avez récolté vos plantes !\n");
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -471,28 +619,42 @@ public class Terrain
             Console.ResetColor();
         }
 
-        Console.WriteLine("Vous avez désherbé vos mauvaises herbes.");
-        AfficherParcelle();
+        if (totalRecolte > 0)
+        {
+            Console.WriteLine($"Stock total après récolte : {StockTotalDeSemis}");
+        }
+
     }
 
     public void VendreSemis(Plante plante)
     {
-        Console.Write("Quantité de semis à vendre : ");
+        Console.Write($"Quantité de semis à vendre (prix unitaire = {plante.PrixUnitaireDeLaPlante}): ");
         string saisie = Console.ReadLine()!;
 
-        if (!int.TryParse(saisie, out int quantite) || quantite <= 0)
+        if (!int.TryParse(saisie, out int quantiteAVendre) || quantiteAVendre <= 0)
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Quantité invalide.");
+            Console.ResetColor();
+            return;
+        }
+
+        if (quantiteAVendre > StockTotalDeSemis)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Vous n'avez pas assez de semis en stock pour cette vente.");
+            Console.ResetColor();
             return;
         }
 
         double prixUnitaire = plante.PrixUnitaireDeLaPlante;
-        double gain = quantite * prixUnitaire;
+        double gain = quantiteAVendre * prixUnitaire;
 
-        StockTotalDeSemis -= quantite;
+        StockTotalDeSemis -= quantiteAVendre;
         PiecesOrEnChocolat += gain;
 
-        Console.WriteLine($"✅ Vous avez vendu {quantite} semis de {plante.Nom} pour {gain} pièces d’or en chocolat !");
+        Console.WriteLine($"✅ Vous avez vendu {quantiteAVendre} semis de {plante.Nom} pour {gain} pièces d’or en chocolat !");
         Console.WriteLine($"💰 Nouveau solde : {PiecesOrEnChocolat} pièces.");
     }
+
 }

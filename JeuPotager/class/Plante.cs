@@ -8,15 +8,15 @@ public abstract class Plante
     public double SurfaceNecessaire { get; set; }
     public int VitesseCroissance { get; set; }
     public string? BesoinEau { get; set; }
-    public string? BesoinLumiere { get; set; }
+    public TypeMeteo BesoinLumiere { get; set; }
     public double TemperaturePrefereeMin { get; set; }
     public double TemperaturePrefereeMax { get; set; }
     public int EsperanceDeVie { get; set; } // nbr de mois de vie max peu importe les conditions
     public int Production { get; set; }
     public int NbrMoisDeCroissance { get; set; } = 0;
     public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
-    public int NbrMoisMaladeConsecutif { get; private set; } = 0;
-    public int NbrMoisAvecMauvaisesHerbesConsecutif { get; private set; } = 0;
+    public int NbrMoisMaladeConsecutif { get; set; } = 0;
+    public int NbrMoisAvecMauvaisesHerbesConsecutif { get; set; } = 0;
     public double PrixUnitaireDeLaPlante { get; private set; }
 
 
@@ -72,8 +72,16 @@ public abstract class Plante
     public void Desherber() //utilisée dans Terrain.cs
     {
         EstEntoureeParMauvaisesHerbes = false;
+        NbrMoisAvecMauvaisesHerbesConsecutif = 0;
     }
 
+    public void RetirerPlanteMorte()
+    {
+        EstSemee = false;
+        EstMalade = false;
+        AGrandi = false;
+        EstEntoureeParMauvaisesHerbes = false;
+    }
     public void Arroser()
     {
         if (EstSemee)
@@ -89,25 +97,28 @@ public abstract class Plante
     }
 
     // Méthode pour vérifier si les conditions sont respectées
-    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, string ensoleillement, int temperatureActuelle)
+    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
     {
         int totalConditions = 4;
         int nbrConditionsOK = 0;
 
         if (SolPrefere == typeSol) nbrConditionsOK++;
         if (BesoinEau == humiditeTerrain) nbrConditionsOK++;
-        if (BesoinLumiere == ensoleillement) nbrConditionsOK++;
+        if ((BesoinLumiere == TypeMeteo.Ensoleille) || (BesoinLumiere == TypeMeteo.Nuageux)) nbrConditionsOK++;
         if (temperatureActuelle >= TemperaturePrefereeMin && temperatureActuelle <= TemperaturePrefereeMax) nbrConditionsOK++;
 
         bool respectees = nbrConditionsOK >= totalConditions / 2;
         EstMorte = !respectees;
         if (!respectees)
+        {
             Console.WriteLine("Conditions défavorable");
+            Console.ReadLine();
+        }
         return respectees;
     }
 
 
-    public void Croissance(string typeSol, string humiditeTerrain, string ensoleillement, int temperatureActuelle, Meteo meteo)
+    public void Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
     {
         if (EstSemee && EstArrosee)
         {
@@ -117,8 +128,9 @@ public abstract class Plante
                 // Réduit croissance sous conditions extrêmes
                 NbrMoisDeCroissance = Math.Abs(NbrMoisDeCroissance - 2); // réduire un mois de croissance
             }
-            if (ConditionsRespectees(typeSol, humiditeTerrain, ensoleillement, temperatureActuelle))
+            if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle, meteo))
             {
+                Grandir();
                 NbrMoisDeCroissance++;
                 VitesseCroissance++;
             }
