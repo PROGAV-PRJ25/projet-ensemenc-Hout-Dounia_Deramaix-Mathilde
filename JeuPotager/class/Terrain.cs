@@ -79,7 +79,7 @@ public class Terrain
         }
     }
 
-    public void Arroser()
+    public bool Arroser()
     {
         bool auMoinsUneArrosee = false;
         for (int i = 0; i < LongueurTerrain; i++)
@@ -98,12 +98,14 @@ public class Terrain
         {
             Console.WriteLine("\n   🚿 Vous avez arrosé vos plantes !\n");
             NiveauHumiditeSol++; // Humidité ajoutée uniquement si une plante a été arrosée
+            return true;
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Aucune plante n'est prête à être arrosée.");
             Console.ResetColor();
+            return false;
         }
     }
     public bool Semer(Plante plante)
@@ -130,13 +132,24 @@ public class Terrain
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("  Vous n'avez plus assez de semis disponible ...\n");
-            Console.ResetColor();
+            if (NbPlantes >= CapaciteMaxPlantes)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("  Vous n'avez plus de place disponible pour semer vos plantes...\n");
+                Console.ResetColor();
+            }
+            else if (StockTotalDeSemis <= 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("  Vous n'avez plus assez de semis disponible ...\n");
+                Console.ResetColor();
+            }
         }
         if (auMoinsUneSemee)
             Console.WriteLine("  🧑‍🌾 Vous avez semé votre terrain ...\n");
-        return false; // terrain plein
+
+        return false;
+        // terrain plein
     }
 
     public void MiseAJourMeteo(Meteo nouvelleMeteo)
@@ -193,7 +206,7 @@ public class Terrain
     private bool intrusDetecte;
     private bool intemperieDetectee;
 
-    public void SoignerPlantesMalades()
+    public bool SoignerPlantesMalades()
     {
         bool auMoinsUneSoignee = false;
         for (int x = 0; x < LongueurTerrain; x++)
@@ -210,12 +223,16 @@ public class Terrain
             }
         }
         if (auMoinsUneSoignee)
+        {
             Console.WriteLine("\n   💉 Vous avez soigné vos plantes d'une terrible maladie !\n");
+            return true;
+        }
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Aucune plante n'est prête à être soignée.");
             Console.ResetColor();
+            return false;
         }
     }
 
@@ -380,6 +397,7 @@ public class Terrain
     {
         return $"       Terrain {Nom} ({Superficie} m²)\n" +
                $"       Type de sol : {TypeSol}\n" +
+               $"       Humidité du terrain :{HumiditeSol}" +
                $"       Capacité max : {CapaciteMaxPlantes} plantes\n" +
                $"       Plantes présentes : {NbPlantes}\n" +
                $"       Stock de semis : {StockTotalDeSemis}\n";
@@ -392,7 +410,7 @@ public class Terrain
         Console.ResetColor();
     }
 
-    public void DeracinerPlantesMortes()
+    public bool DeracinerPlantesMortes()
     {
         bool auMoinsUneDeracinee = false;
         for (int x = 0; x < LongueurTerrain; x++)
@@ -411,12 +429,16 @@ public class Terrain
         }
         EstRecouvertDePlantesMortes = false;
         if (auMoinsUneDeracinee)
+        {
             Console.WriteLine("\n   🥀 Vous avez retiré toutes les plantes mortes de votre terrain !\n");
+            return true;
+        }
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Aucune plante n'est prête à être déracinée.");
             Console.ResetColor();
+            return false;
         }
     }
 
@@ -475,7 +497,7 @@ public class Terrain
         }
     }
 
-    public void Desherber()
+    public bool Desherber()
     {
         bool auMoinsUneDesherbee = false;
         for (int i = 0; i < LongueurTerrain; i++)
@@ -491,12 +513,16 @@ public class Terrain
             }
         }
         if (auMoinsUneDesherbee)
+        {
             Console.WriteLine(" 🍀 Vous avez retiré les mauvaises herbes de vos plantes");
+            return true;
+        }
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Aucune mauvaise herbe n'est prête à être désherbé.");
             Console.ResetColor();
+            return false;
         }
     }
 
@@ -589,7 +615,7 @@ public class Terrain
     }
 
 
-    public void RecolterPlantes()
+    public bool RecolterPlantes()
     {
         bool auMoinsUneRecoltee = false;
         int totalRecolte = 0;
@@ -611,22 +637,23 @@ public class Terrain
             }
         }
         if (auMoinsUneRecoltee)
+        {
             Console.WriteLine("\n   🧺 Vous avez récolté vos plantes !\n");
+            if (totalRecolte > 0)
+                Console.WriteLine($"Stock total après récolte : {StockTotalDeSemis}");
+            return true;
+        }
         else
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Aucune plante n'était prête à être récoltée.");
             Console.ResetColor();
-        }
-
-        if (totalRecolte > 0)
-        {
-            Console.WriteLine($"Stock total après récolte : {StockTotalDeSemis}");
+            return false;
         }
 
     }
 
-    public void VendreSemis(Plante plante)
+    public bool VendreSemis(Plante plante)
     {
         Console.Write($"Quantité de semis à vendre (prix unitaire = {plante.PrixUnitaireDeLaPlante}): ");
         string saisie = Console.ReadLine()!;
@@ -636,7 +663,7 @@ public class Terrain
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Quantité invalide.");
             Console.ResetColor();
-            return;
+            return false;
         }
 
         if (quantiteAVendre > StockTotalDeSemis)
@@ -644,7 +671,7 @@ public class Terrain
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Vous n'avez pas assez de semis en stock pour cette vente.");
             Console.ResetColor();
-            return;
+            return false;
         }
 
         double prixUnitaire = plante.PrixUnitaireDeLaPlante;
@@ -655,6 +682,7 @@ public class Terrain
 
         Console.WriteLine($"✅ Vous avez vendu {quantiteAVendre} semis de {plante.Nom} pour {gain} pièces d’or en chocolat !");
         Console.WriteLine($"💰 Nouveau solde : {PiecesOrEnChocolat} pièces.");
+        return true;
     }
 
 }

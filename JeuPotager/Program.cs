@@ -95,22 +95,39 @@ bool partiefinie = false;
 int compteurMois = 1;
 string paysSelectionne = "";
 
+
+// Fonction qui attend une touche valide parmi un ensemble de char (KeyChar)
+ConsoleKeyInfo AttendreToucheValide(string messageErreur, params char[] touchesValides)
+{
+    ConsoleKeyInfo touche;
+    do
+    {
+        touche = Console.ReadKey(true);
+        if (!touchesValides.Contains(touche.KeyChar))
+            Console.WriteLine(messageErreur);
+    } while (!touchesValides.Contains(touche.KeyChar));
+
+    return touche;
+}
+
 void PasserAuMoisSuivant()
 {
-    Console.WriteLine("Appuyez sur Entrée pour aller au mois suivant ! (ou Espace pour arreter)");
-    ConsoleKeyInfo suiteJeu = Console.ReadKey(true); // true pour pas afficher la touche
+    Console.WriteLine("Appuyez sur Entrée pour aller au mois suivant ! (ou Espace pour arrêter)");
 
-    while ((suiteJeu.Key != ConsoleKey.Enter) && (suiteJeu.Key != ConsoleKey.Spacebar))
-    {
-        Console.WriteLine("Erreur. Réessayez.");
-        suiteJeu = Console.ReadKey(true);
-    }
-    if (suiteJeu.Key == ConsoleKey.Spacebar)
+    // Appel de la fonction qui retourne ConsoleKeyInfo
+    ConsoleKeyInfo touche = AttendreToucheValide("\nErreur. Réessayez.", '\r', ' '); // touche Entrée -> '\r' et Espace -> ' ' 
+
+    // On vérifie la touche via la propriété Key, pas KeyChar
+    if (touche.Key == ConsoleKey.Spacebar)
     {
         partiefinie = true;
     }
+
     compteurMois++;
 }
+
+
+
 
 //--------------------------------------------------
 //--------------------------------------------------   Début du Code principal
@@ -143,14 +160,9 @@ Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événeme
 Console.ForegroundColor = ConsoleColor.Blue;
 Console.WriteLine("⏱️ Deux modes de jeu :\n");
 Console.ResetColor();
-Console.WriteLine("Appuyez sur i pour plus d'informations sinon appuyez sur entrée");
-ConsoleKeyInfo informations = Console.ReadKey();
-while ((informations.KeyChar != 'i') && (informations.Key != ConsoleKey.Enter))
-{
-    Console.WriteLine();
-    Console.WriteLine("Erreur. Réessayez.");
-    informations = Console.ReadKey();
-}
+Console.WriteLine("Appuyez sur i pour plus d'informations sinon appuyez sur Entrée pour passez à la suite");
+
+ConsoleKeyInfo informations = AttendreToucheValide("Erreur. Réessayez.", 'i', '\r');
 if (informations.KeyChar == 'i')
 {
     Console.WriteLine("1️⃣  Mode Classique (smois après mois) :");
@@ -176,14 +188,7 @@ for (int i = 0; i < tailleCartePays; i++)// Affichage et choix des pays disponib
 }
 
 Console.WriteLine();
-ConsoleKeyInfo touchePays = Console.ReadKey();
-while (touchePays.KeyChar != '1')
-{
-    Console.WriteLine();
-    Console.WriteLine("Erreur. Réessayez.");
-    touchePays = Console.ReadKey();
-}
-
+ConsoleKeyInfo touchePays = AttendreToucheValide("Erreur. Réessayez.", '1');
 if (touchePays.KeyChar == '1')
 {
     paysSelectionne = "Haribo World";
@@ -201,14 +206,7 @@ if (touchePays.KeyChar == '1')
 }
 
 Pays pays = new Pays(paysSelectionne);
-
-ConsoleKeyInfo toucheTerrain = Console.ReadKey();
-while ((toucheTerrain.KeyChar != '1') && (toucheTerrain.KeyChar != '2'))
-{
-    Console.WriteLine();
-    Console.WriteLine("Erreur. Réessayez.");
-    toucheTerrain = Console.ReadKey();
-}
+ConsoleKeyInfo toucheTerrain = AttendreToucheValide("Erreur. Réessayez.", '1', '2');
 
 Terrain? terrain = null!;
 Plante? planteUtilisee = null!;
@@ -234,14 +232,7 @@ if (toucheTerrain.KeyChar == '2')
 }
 
 Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
-ConsoleKeyInfo debutJeu = Console.ReadKey();
-while (debutJeu.Key != ConsoleKey.Enter)
-{
-    Console.WriteLine();
-    Console.WriteLine("Erreur. Réessayez.");
-    debutJeu = Console.ReadKey();
-}
-
+ConsoleKeyInfo debutJeu = AttendreToucheValide("Erreur. Réessayez.", '\r');
 do
 {
     Console.Clear();
@@ -317,39 +308,46 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
             switch (actionPlante.KeyChar)
             {
                 case '1':
-                    terrain!.Arroser();
-                    choix = true;
+                    if (terrain!.Arroser())
+                        choix = true;
                     break;
                 case '2':
-                    terrain!.RecolterPlantes();
-                    choix = true;
+                    if (terrain!.RecolterPlantes())
+                        choix = true;
                     break;
                 case '3':
-                    terrain!.Desherber();
-                    choix = true;
+                    if (terrain!.Desherber())
+                        choix = true;
                     break;
                 case '4':
-                    terrain!.Semer(planteUtilisee);
-                    choix = true;
+                    if (terrain!.Semer(planteUtilisee))
+                        choix = true;
                     break;
                 case '5':
-                    terrain!.SoignerPlantesMalades();
-                    choix = true;
+                    if (terrain!.SoignerPlantesMalades())
+                        choix = true;
                     break;
                 case '6':
-                    terrain!.DeracinerPlantesMortes();
-                    choix = true;
+                    if (terrain!.DeracinerPlantesMortes())
+                        choix = true;
                     break;
                 case '7':
-                    terrain!.VendreSemis(planteUtilisee);
-                    choix = true;
+                    if (terrain!.VendreSemis(planteUtilisee))
+                        choix = true;
                     break;
                 case '8':
                     choix = true;
+                    Console.WriteLine("\n 💤 Moment détente, vous vous reposez et ne faites rien !\n");
                     break;
                 default:
                     Console.WriteLine("\nChoix invalide, appuyez sur une touche de 1 à 8.\n");
                     break;
+            }
+            if (!choix)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("❌ Action impossible. Réessayez.\n");
+                Console.ResetColor();
             }
             terrain.AfficherParcelle();
         }
