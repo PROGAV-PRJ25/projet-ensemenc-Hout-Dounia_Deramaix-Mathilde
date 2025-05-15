@@ -259,7 +259,7 @@ do
     terrain.Semer(planteUtilisee);
     PasserAuMoisSuivant();
 }
-while (compteurMois == 2);
+while (compteurMois == 1);
 while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
 {
     Console.Clear();
@@ -287,9 +287,10 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
     Console.ResetColor();
     terrain.UtiliserFonctionnalitesAleatoire();
 
-    bool choix = false;
 
+    terrain.EtreMort();
 
+    bool choix;
     for (int i = 1; i <= 2; i++)
     {
         choix = false; // Réinitialise la validité à chaque nouvelle action

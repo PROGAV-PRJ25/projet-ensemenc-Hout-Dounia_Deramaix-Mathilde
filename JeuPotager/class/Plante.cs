@@ -1,4 +1,4 @@
-public class Plante
+public abstract class Plante
 {
     //-------------  PROPRIETES DE LA PLANTE
     public string? Nom { get; set; }
@@ -13,7 +13,7 @@ public class Plante
     public double TemperaturePrefereeMax { get; set; }
     public int EsperanceDeVie { get; set; } // nbr de mois de vie max peu importe les conditions
     public int Production { get; set; }
-    public int NbrMoisDeCroissance { get;  set; } = 0;
+    public int NbrMoisDeCroissance { get; set; } = 0;
     public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
     public int NbrMoisMaladeConsecutif { get; private set; } = 0;
     public int NbrMoisAvecMauvaisesHerbesConsecutif { get; private set; } = 0;
@@ -23,11 +23,11 @@ public class Plante
     //-------------  ETAT DE LA PLANTE
     public bool EstMalade { get; set; } = false;
     public bool EstMorte { get; set; } = false;
-    public bool EstSemee { get;  set; } = false;
-    public bool EstArrosee { get;  set; } = false;
-    public bool EstDesherbee { get;  set; } = false;
-    public bool EstEntoureeParMauvaisesHerbes { get;  set; } = false;
-    public bool AGrandi { get;  set; } = false;
+    public bool EstSemee { get; set; } = false;
+    public bool EstArrosee { get; set; } = false;
+    public bool EstDesherbee { get; set; } = false;
+    public bool EstEntoureeParMauvaisesHerbes { get; set; } = false;
+    public bool AGrandi { get; set; } = false;
     public bool EstRecoltable
     {
         get
@@ -55,6 +55,7 @@ public class Plante
         PrixUnitaireDeLaPlante = prixUnitaireDeLaPlante;
     }
 
+    public abstract Plante Cloner();
     public void Grandir()
     {
         if (NbrMoisDeCroissance >= (NbrMoisAvantRecolte / 2))
@@ -100,6 +101,8 @@ public class Plante
 
         bool respectees = nbrConditionsOK >= totalConditions / 2;
         EstMorte = !respectees;
+        if (!respectees)
+            Console.WriteLine("Conditions défavorable");
         return respectees;
     }
 
@@ -160,24 +163,17 @@ public class Plante
         }
     }
 
-    public void EtreMalade()
+    public void EtreMalade(Random random)
     {
-        Random random = new Random();
-        double probabilitéContamination = random.Next(0, 100);  // génère une valeur entre 0 et 99
-        //verif contamination
-        if (probabilitéContamination < 10)  // Si la proba est inférieure à 20%
-        {
+        double proba = random.Next(0, 100);
+        if (proba < 10)
             EstMalade = true;
-        }
-        if (EstMalade == true)
-        {
-            NbrMoisMaladeConsecutif++;
-        }
-        if (NbrMoisMaladeConsecutif > 2)
-        {
-            EstMorte = true;
-        }
 
+        if (EstMalade)
+            NbrMoisMaladeConsecutif++;
+
+        if (NbrMoisMaladeConsecutif > 3)
+            EstMorte = true;
     }
 
     public override string ToString()

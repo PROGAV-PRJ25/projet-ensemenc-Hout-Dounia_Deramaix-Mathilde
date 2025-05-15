@@ -48,19 +48,21 @@ public class Terrain
 
     public void EtreMort()
     {
-        int compteurPlantesMortes = 0 ; 
+        int compteurPlantesMortes = 0;
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                if (plante!.EstMorte == true )
-                    compteurPlantesMortes++ ; 
-                if (compteurPlantesMortes == NbPlantes)
-                    EstRecouvertDePlantesMortes = true ; 
+                if (plante != null && plante!.EstMorte == true)
+                    compteurPlantesMortes++;
             }
         }
-        Console.WriteLine("Les plantes ont été arrosées");
+        if (compteurPlantesMortes == NbPlantes)
+        {
+            EstRecouvertDePlantesMortes = true;
+            Console.WriteLine("Les plantes sont mortes");
+        }
     }
 
     private void InitialiserTerrain()
@@ -84,28 +86,33 @@ public class Terrain
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                plante!.Arroser();
+                if (plante != null && plante.EstSemee)
+                    plante!.Arroser();
             }
         }
+        NiveauHumiditeSol++;    // Humidité ajouté avec l'arrosage
         Console.WriteLine("Les plantes ont été arrosées");
     }
 
-    public bool AddPlante(Plante plante)
+    public bool Semer(Plante plante)
     {
-        for (int x = 0; x < LongueurTerrain; x++)
+        while (NbPlantes < CapaciteMaxPlantes && StockTotalDeSemis > 0)
         {
-            for (int y = 0; y < LargeurTerrain; y++)
+            for (int x = 0; x < LongueurTerrain; x++)
             {
-                if (Plantes[x][y] == null)
+                for (int y = 0; y < LargeurTerrain; y++)
                 {
-                    Plantes[x][y] = plante;
-                    NbPlantes++;
-                    StockTotalDeSemis--;
-
-                    return true;
+                    if (Plantes[x][y] == null)
+                    {
+                        Plantes[x][y] = plante.Cloner();
+                        Plantes[x][y]!.Semer();
+                        NbPlantes++;
+                        StockTotalDeSemis--;
+                    }
                 }
             }
         }
+        AfficherParcelle();
         return false; // terrain plein
     }
 
@@ -306,37 +313,23 @@ public class Terrain
     {
         if (!bruitFait && intrusDetecte)
         {
-            // Récupération des plantes vivantes
-            List<(int x, int y)> plantesVivantes = new List<(int x, int y)>();
 
-            for (int x = 0; x < LongueurTerrain; x++)
-            {
-                for (int y = 0; y < LargeurTerrain; y++)
-                {
-                    var plante = Plantes[x][y];
-                    if (plante != null && !plante.EstMorte)
-                    {
-                        plantesVivantes.Add((x, y));
-                    }
-                }
-            }
+            int x = Random.Next(0, LargeurTerrain);
+            int y = Random.Next(0, LongueurTerrain);
 
-            if (plantesVivantes.Count > 0)
-            {
-                // Choisir une plante au hasard
-                var index = Random.Next(plantesVivantes.Count);
-                var (x, y) = plantesVivantes[index];
-                Plantes[x][y].EstMorte = true;
+            if ((Plantes[x][y] != null) && !Plantes[x][y]!.EstMorte)
 
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nUne plante est morte dans votre jardin...");
-                Console.ResetColor();
+                Plantes[x][y]!.EstMorte = true;
 
-                Console.WriteLine("\nÉtat actuel du terrain :\n");
-                AfficherParcelle();
-            }
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nUne plante est morte dans votre jardin...");
+            Console.ResetColor();
+
+            Console.WriteLine("\nÉtat actuel du terrain :\n");
+            AfficherParcelle();
         }
     }
+
 
 
     public override string ToString()
@@ -349,15 +342,7 @@ public class Terrain
     }
 
 
-    public void Semer(Plante plante)
-    {
-        while (NbPlantes < CapaciteMaxPlantes)
-        {
-            AddPlante(plante);
-            plante.Semer();
-        }
-        AfficherParcelle();
-    }
+
 
     public void ApparaitreMauvaiseHerbe()
     {
@@ -366,7 +351,8 @@ public class Terrain
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                plante.ApparaitreMauvaiseHerbe();
+                if (plante != null)
+                    plante.ApparaitreMauvaiseHerbe();
             }
         }
     }
@@ -378,7 +364,8 @@ public class Terrain
             for (int j = 0; j < LargeurTerrain; j++)
             {
                 var plante = Plantes[i][j];
-                plante.Desherber();
+                if (plante != null)
+                    plante.Desherber();
             }
         }
         Console.WriteLine("Vous avez desherber vos mauvaises herbes ! ");
@@ -387,16 +374,16 @@ public class Terrain
 
     public void TomberMalade()
     {
+        Random rnd = new Random();
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                var plante = Plantes[i][j];
-                plante.EtreMalade();
+                if (Plantes[i][j] != null)
+                    Plantes[i][j]!.EtreMalade(rnd);  // partage la même instance !
             }
         }
     }
-
     public void UtiliserFonctionnalitesAleatoire()
     {
         ApparaitreMauvaiseHerbe();

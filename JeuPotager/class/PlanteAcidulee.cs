@@ -17,5 +17,9 @@ public class PlanteAcidulee : Plante
     {
         this.Nom = nom;
     }
+    public override Plante Cloner()
+    {
+        return new PlanteAcidulee(this.Nom!);
+    }
 }
 
