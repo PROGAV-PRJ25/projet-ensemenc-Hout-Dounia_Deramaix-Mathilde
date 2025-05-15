@@ -107,35 +107,45 @@ public abstract class Plante
         if ((BesoinLumiere == TypeMeteo.Ensoleille) || (BesoinLumiere == TypeMeteo.Nuageux)) nbrConditionsOK++;
         if (temperatureActuelle >= TemperaturePrefereeMin && temperatureActuelle <= TemperaturePrefereeMax) nbrConditionsOK++;
 
-        bool respectees = nbrConditionsOK >= totalConditions / 2;
+        bool respectees = nbrConditionsOK > totalConditions / 2;
         EstMorte = !respectees;
-        if (!respectees)
-        {
-            Console.WriteLine("Conditions défavorable");
-            Console.ReadLine();
-        }
         return respectees;
     }
 
+    public string AfficherConditionsFavorites()
+    {
+        string informations = $"        Sol préféré : {SolPrefere}\n" +
+                              $"        Température préféré : de {TemperaturePrefereeMin} à {TemperaturePrefereeMax}\n" +
+                              $"        Humidité préférée du sol : {BesoinEau}\n";
 
-    public void Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
+
+        return informations;
+    }
+
+
+    public bool Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
     {
         if (EstSemee && EstArrosee)
         {
-            // Ajuste les cdt selon la météo
             if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
             {
-                // Réduit croissance sous conditions extrêmes
-                NbrMoisDeCroissance = Math.Abs(NbrMoisDeCroissance - 2); // réduire un mois de croissance
+                NbrMoisDeCroissance = Math.Abs(NbrMoisDeCroissance - 2);
             }
             if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle, meteo))
             {
                 Grandir();
                 NbrMoisDeCroissance++;
                 VitesseCroissance++;
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
+        return false;
     }
+
 
     public int RecolterPlante()
     {

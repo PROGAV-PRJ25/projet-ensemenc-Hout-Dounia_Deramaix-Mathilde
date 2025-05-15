@@ -5,7 +5,7 @@ public class TerrainSucre : Terrain
             nom,
             superficie: 20,
             longueurTerrain: 4,
-            largeurTerrain: 5,
+            largeurTerrain: 8,
             typeSol: "sucre",
             humiditeSol: "très humide",
             niveauHumiditeSol: 6,
