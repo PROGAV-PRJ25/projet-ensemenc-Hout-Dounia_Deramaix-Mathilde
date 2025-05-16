@@ -11,7 +11,7 @@ public class PlanteAcidulee : Plante
         nbrMoisAvantFloraison: 6,
         prixUnitaireDeLaPlante: 10)
     {
-        this.Nom = nom;
+        Nom = nom;
     }
     public override Plante Cloner()
     {

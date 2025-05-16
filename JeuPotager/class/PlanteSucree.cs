@@ -6,7 +6,7 @@ public class PlanteSucree : Plante
         solPref: "Sucre",
         besoinEau: "tres humide",
         temperaturePreferemin: 15,
-        temperaturePreferemax: 25,
+        temperaturePreferemax: 27,
         production: 5,
         nbrMoisAvantFloraison: 4,
         prixUnitaireDeLaPlante: 8)
@@ -48,12 +48,17 @@ public class PlanteSucree : Plante
             EstMorte = true;
     }
 
-    public override void Pourrir()
+    public override void Pourrir(Plante plante) /////////REVOIR
     {
         if (EstRecoltable)
-            NbrMoisRecoltableMaisPasRecoltee++;
+            if (NbrMoisDeCroissance <= NbrMoisAvantFloraison)
+                plante.EstRecoltable = false;
+            else
+                NbrMoisRecoltableMaisPasRecoltee++;
 
         if (NbrMoisRecoltableMaisPasRecoltee > 5) // Le produit de ce type de plante ne se gâche pas vite
             EstMorte = true;
+
+        Console.WriteLine(NbrMoisRecoltableMaisPasRecoltee);
     }
 }
