@@ -243,7 +243,10 @@ do
     }
     Console.WriteLine();
     terrain.AfficherLeSolde();
-    meteo.AfficherConditions();
+    Console.ForegroundColor = ConsoleColor.Cyan;
+    Console.WriteLine("🌦️  Informations Météo Actuelles\n"); //////// Faire une procédure d'affichage informations pour optimiser le tout 
+    Console.ResetColor();
+    Console.WriteLine(meteo.ToString());
     terrain.Semer(planteUtilisee);
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("🧑‍🌾 Informations du terrain : \n");

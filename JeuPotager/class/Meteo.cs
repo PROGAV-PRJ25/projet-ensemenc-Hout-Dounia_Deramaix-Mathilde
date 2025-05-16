@@ -14,9 +14,9 @@ public class Meteo
     public double TauxPrecipitations { get; private set; }
     public TypeMeteo Type { get; private set; }
 
-    private Random random = new Random();
+    private Random Random = new Random(); //Pour le choix du type de météo
 
-    public Meteo() //météo par défaut
+    public Meteo() //Pour créer une météo par défaut 
     {
         Temperature = 0;
         TauxPrecipitations = 0;
@@ -29,9 +29,43 @@ public class Meteo
         GenererTemperature(terrain.TemperatureConsigne, numeroMois);
     }
 
-    public double GenererTemperature(double temperatureConsigneTerrain, int numeroMois)
+    public void GenererMeteo()
     {
-        int moisIndice = (numeroMois - 1 + 12) % 12;
+        Type = (TypeMeteo)Random.Next(Enum.GetValues(typeof(TypeMeteo)).Length);
+
+        switch (Type)
+        {
+            case TypeMeteo.Ensoleille:
+            case TypeMeteo.Nuageux:
+                TauxPrecipitations = 0;
+                break;
+
+            case TypeMeteo.PetitePluie:
+                TauxPrecipitations = Random.Next(1, 5);
+                break;
+
+            case TypeMeteo.Pluie:
+                TauxPrecipitations = Random.Next(5, 20);
+                break;
+
+            case TypeMeteo.PluiesBattantes:
+                TauxPrecipitations = Random.Next(20, 50);
+                break;
+
+            case TypeMeteo.ForteTempete:
+                TauxPrecipitations = Random.Next(50, 100);
+                break;
+
+            default:
+                TauxPrecipitations = 0;
+                break;
+        }
+    }
+
+    public double GenererTemperature(double temperatureConsigneTerrain, int numeroMois)
+    //écart de température qui va être ajouté à la température consigne du terrain et cela en fonction du mois de l'année 
+    {
+        int moisIndice = (numeroMois - 1 + 12) % 12; // pour que le mois soit entre janvier et décembre
         List<double> ecartsMensuels = new List<double>
         {
             -5,  // Janvier
@@ -52,48 +86,11 @@ public class Meteo
         return Temperature;
     }
 
-    public void GenererMeteo()
+
+    public override string ToString() //Résumé de la météo
     {
-        Type = (TypeMeteo)random.Next(Enum.GetValues(typeof(TypeMeteo)).Length);
-
-        switch (Type)
-        {
-            case TypeMeteo.Ensoleille:
-            case TypeMeteo.Nuageux:
-                TauxPrecipitations = 0;
-                break;
-
-            case TypeMeteo.PetitePluie:
-                TauxPrecipitations = random.Next(1, 5);
-                break;
-
-            case TypeMeteo.Pluie:
-                TauxPrecipitations = random.Next(5, 20);
-                break;
-
-            case TypeMeteo.PluiesBattantes:
-                TauxPrecipitations = random.Next(20, 50);
-                break;
-
-            case TypeMeteo.ForteTempete:
-                TauxPrecipitations = random.Next(50, 100);
-                break;
-
-            default:
-                TauxPrecipitations = 0;
-                break;
-        }
-    }
-
-    public void AfficherConditions()
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine();
-        Console.WriteLine("🌦️  Informations Météo Actuelles");
-        Console.WriteLine();
-        Console.ResetColor();
-        Console.WriteLine($"🌡️  Température : {Temperature}°C");
-        Console.WriteLine($"💧  Précipitations : {TauxPrecipitations} mm");
-        Console.WriteLine($"📡  Type de météo : {Type}\n");
+        return $"🌡️  Température : {Temperature}°C\n" +
+               $"💧  Précipitations : {TauxPrecipitations} mm\n" +
+               $"📡  Type de météo : {Type}\n";
     }
 }
