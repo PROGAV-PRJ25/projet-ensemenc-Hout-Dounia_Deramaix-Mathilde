@@ -218,7 +218,7 @@ if (toucheTerrain.KeyChar == '1')
 {
     terrain = TerrainFactory.CreerTerrainAcidule("langueDeChat", meteo);
     meteo = new Meteo(compteurMois, terrain);
-    terrain.meteo = meteo;
+    terrain.Meteo = meteo;
     pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
     Console.WriteLine($"Vous avez choisi le terrain acidulé! \n");
@@ -227,7 +227,7 @@ if (toucheTerrain.KeyChar == '2')
 {
     terrain = TerrainFactory.CreerTerrainSucre("Dragibus", meteo);
     meteo = new Meteo(compteurMois, terrain);
-    terrain.meteo = meteo;
+    terrain.Meteo = meteo;
     pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteSucree("Dragibus");
     Console.WriteLine($"Vous avez choisi le terrain sucré! \n");
@@ -257,7 +257,7 @@ do
     Console.ForegroundColor = ConsoleColor.Blue;
     Console.WriteLine($"🌱 Les conditions favorites de vos semis :\n");
     Console.ResetColor();
-    Console.WriteLine(planteUtilisee.AfficherConditionsFavorites());
+    Console.WriteLine(planteUtilisee.ToString());
     terrain.AfficherParcelle();
     PasserAuMoisSuivant();
 }
@@ -294,7 +294,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine($"    🌱 Les conditions favorites de vos semis :\n");
         Console.ResetColor();
-        Console.WriteLine(planteUtilisee.AfficherConditionsFavorites());
+        Console.WriteLine(planteUtilisee.ToString());
     }
     Console.ForegroundColor = ConsoleColor.DarkMagenta;
     Console.WriteLine("📷 Informations Webcam\n");

@@ -9,11 +9,11 @@ public class TerrainAcidule : Terrain
             typeSol: "acide",
             humiditeSol: "humide",
             niveauHumiditeSol: 4,
-            temperatureConsigne: 20.5,
+            temperatureConsigne: 40.5,
             meteo)
     {
-        this.Nom = nom;
-        this.meteo = meteo;
+        Nom = nom;
+        Meteo = meteo;
     }
 }
 

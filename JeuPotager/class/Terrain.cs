@@ -11,7 +11,7 @@ public class Terrain
     public double TemperatureConsigne { get; set; }
     public int NbPlantes { get; private set; } = 0;
     public double PiecesOrEnChocolat { get; private set; } = 0;
-    public Meteo meteo { get; set; }
+    public Meteo Meteo { get; set; }
     public List<List<Plante?>> Plantes { get; set; } // grille de plantes (null = vide)
     private int risquePresenceIntrus = 10;
     private Random Random { get; }
@@ -31,7 +31,7 @@ public class Terrain
         NiveauHumiditeSol = niveauHumiditeSol;
         CapaciteMaxPlantes = longueurTerrain * largeurTerrain;
         TemperatureConsigne = temperatureConsigne;
-        this.meteo = meteo;
+        Meteo = meteo;
         Random = new Random();
         StockTotalDeSemis = CapaciteMaxPlantes;
         InitialiserTerrain();
@@ -40,7 +40,7 @@ public class Terrain
     public Terrain(string nom, Meteo meteo)
     {
         Nom = nom;
-        this.meteo = meteo;
+        Meteo = meteo;
         Random = new Random();
         InitialiserTerrain();
     }
@@ -153,7 +153,7 @@ public class Terrain
 
     public void MiseAJourMeteo(Meteo nouvelleMeteo)
     {
-        this.meteo = nouvelleMeteo;
+        Meteo = nouvelleMeteo;
     }
 
     public void AfficherParcelle()
@@ -270,7 +270,7 @@ public class Terrain
 
     private bool SignalerIntemperie()
     {
-        return meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes;
+        return Meteo.Type == TypeMeteo.ForteTempete || Meteo.Type == TypeMeteo.PluiesBattantes;
     }
 
     public void ActiverModeUrgence()
@@ -545,7 +545,7 @@ public class Terrain
     {
         ApparaitreMauvaiseHerbe();
         TomberMalade();
-        CalculerHumiditeSol(meteo);
+        CalculerHumiditeSol(Meteo);
         AfficherParcelle();
     }
 
@@ -591,12 +591,10 @@ public class Terrain
             HumiditeSol = "humide";
         }
         else if (NiveauHumiditeSol < 9)
-        {
-            HumiditeSol = "très humide";
-        }
+            HumiditeSol = "tres humide";
         else
         {
-            HumiditeSol = "extrêmement humide";
+            HumiditeSol = "extremement humide";
         }
     }
 
@@ -612,7 +610,7 @@ public class Terrain
                 if (plante != null && !plante.EstMorte && plante.EstSemee)
                 {
                     bool conditionsDefavorables = plante.Croissance(typeSol, humiditeTerrain, temperatureActuelle, meteo);
-                    if (conditionsDefavorables && !messageAffiche)
+                    if (!conditionsDefavorables && !messageAffiche)
                     {
                         Console.WriteLine("Vos plantes vont mourir dues à des conditions défavorables ... 😔");
                         messageAffiche = true;

@@ -7,12 +7,12 @@ public class TerrainSucre : Terrain
             longueurTerrain: 4,
             largeurTerrain: 8,
             typeSol: "sucre",
-            humiditeSol: "très humide",
+            humiditeSol: "tres humide",
             niveauHumiditeSol: 6,
             temperatureConsigne: 20.5,
             meteo)
     {
-        this.Nom = nom;
-        this.meteo = meteo;
+        Nom = nom;
+        Meteo = meteo;
     }
 }

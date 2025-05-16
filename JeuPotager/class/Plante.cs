@@ -1,153 +1,97 @@
 public abstract class Plante
 {
-    //-------------  PROPRIETES DE LA PLANTE
     public string? Nom { get; set; }
     public string? Nature { get; set; }
     public string? SolPrefere { get; set; }
-    public double Espacement { get; set; }
-    public double SurfaceNecessaire { get; set; }
-    public int VitesseCroissance { get; set; }
     public string? BesoinEau { get; set; }
     public TypeMeteo BesoinLumiere { get; set; }
     public double TemperaturePrefereeMin { get; set; }
     public double TemperaturePrefereeMax { get; set; }
-    public int EsperanceDeVie { get; set; } // nbr de mois de vie max peu importe les conditions
-    public int Production { get; set; }
+    public int Production { get; set; } //Nombre de semis récoltés après la récolte d'une plante
     public int NbrMoisDeCroissance { get; set; } = 0;
-    public int NbrMoisAvantRecolte { get; private set; } // A expiquer l'appelation
-    public int NbrMoisMaladeConsecutif { get; set; } = 0;
+    public int NbrMoisAvantFloraison { get; private set; } //Nombre de mois nécessaires jusqu’à ce que la plante fleurisse
+    public int NbrMoisMaladeConsecutif { get; set; } = 0; //Nombre de mois écoulés depuis la contamination de la plante
     public int NbrMoisAvecMauvaisesHerbesConsecutif { get; set; } = 0;
-    public double PrixUnitaireDeLaPlante { get; private set; }
+    public int NbrMoisRecoltableMaisPasRecoltee { get; set; } = 0;
+    public double PrixUnitaireDeLaPlante { get; private set; } //Pour la fonctionnalité bonus de vente, c'est le prix unitaire de la plante
 
 
-    //-------------  ETAT DE LA PLANTE
+    //-------------  ETAT DE LA PLANTE (BOOLEEN)
     public bool EstMalade { get; set; } = false;
     public bool EstMorte { get; set; } = false;
     public bool EstSemee { get; set; } = false;
     public bool EstArrosee { get; set; } = false;
-    public bool EstDesherbee { get; set; } = false;
+    public bool EstDesherbee { get; set; } = false; //Retrait des mauvaises herbes
     public bool EstEntoureeParMauvaisesHerbes { get; set; } = false;
     public bool AGrandi { get; set; } = false;
     public bool EstRecoltable
+    //La plante est récoltable que le temps de croissance (un certain nombre de mois) est supérieur ou égale
+    //au nombre de mois nécessaires jusqu’à ce que la plante fleurisse 
     {
         get
         {
-            return NbrMoisDeCroissance >= NbrMoisAvantRecolte;
+            return NbrMoisDeCroissance >= NbrMoisAvantFloraison;
         }
     }
 
-    public Plante(string nom, string nature, string solPref, double espacement, double surfaceNecessaire,
-    int vitesseCroissance, string besoinEau, double temperaturePreferemin, double temperaturePreferemax,
-    int esperanceVie, int production, int nbrMoisAvantRecolte, double prixUnitaireDeLaPlante)
+    public Plante(string nom, string nature, string solPref, string besoinEau, double temperaturePreferemin,
+    double temperaturePreferemax, int production, int nbrMoisAvantFloraison, double prixUnitaireDeLaPlante)
     {
         Nom = nom;
         Nature = nature;
         SolPrefere = solPref;
-        Espacement = espacement;
-        SurfaceNecessaire = surfaceNecessaire;
-        VitesseCroissance = vitesseCroissance;
         BesoinEau = besoinEau;
         TemperaturePrefereeMin = temperaturePreferemin;
         TemperaturePrefereeMax = temperaturePreferemax;
-        EsperanceDeVie = esperanceVie;
         Production = production;
-        NbrMoisAvantRecolte = nbrMoisAvantRecolte;
+        NbrMoisAvantFloraison = nbrMoisAvantFloraison;
         PrixUnitaireDeLaPlante = prixUnitaireDeLaPlante;
     }
 
-    public abstract Plante Cloner();
-    public void Grandir()
+    public abstract Plante Cloner(); // Méthode abstraite pour créer une copie indépendante d’une plante.
+                                     // Sinon toutes les plantes agissent de manière identique
+
+
+
+    /////------------------------------- Méthodes liées aux actions du joueurs
+
+    public void Grandir() //Remplacer 🌱 par 🌿 lorsque le temps de croissance de la plante à atteint 
+                          // la moitié du nombre de mois nécessaire à la floraison
     {
-        if (NbrMoisDeCroissance >= (NbrMoisAvantRecolte / 2))
-        {
+        if (NbrMoisDeCroissance >= (NbrMoisAvantFloraison / 2))
             AGrandi = true;
-        }
     }
 
-    public void Semer() //utilisée dans Terrain.cs
+    public void Semer() // Marque la plante comme semée
     {
         EstSemee = true;
     }
 
-    public void Desherber() //utilisée dans Terrain.cs
+    public void Desherber() // Retire les mauvaises herbes autour de la plante
+                            // réintialise le compteur de mois en présence de mauvaises herbes
     {
         EstEntoureeParMauvaisesHerbes = false;
         NbrMoisAvecMauvaisesHerbesConsecutif = 0;
     }
 
-    public void RetirerPlanteMorte()
+    public void RetirerPlanteMorte() //Réinitialise tous les états de la plante après sa mort avant de la retirer
     {
         EstSemee = false;
         EstMalade = false;
         AGrandi = false;
         EstEntoureeParMauvaisesHerbes = false;
     }
-    public void Arroser()
+
+    public void Arroser() //Marque comme arrosée une plante que si elle est semée sinon message d'erreur
     {
         if (EstSemee)
-        {
             EstArrosee = true;
-        }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($" Impossible d’arroser {Nom} car elle n’est pas encore semée.");
-            Console.ResetColor();
-        }
     }
-
-    // Méthode pour vérifier si les conditions sont respectées
-    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
-    {
-        int totalConditions = 4;
-        int nbrConditionsOK = 0;
-
-        if (SolPrefere == typeSol) nbrConditionsOK++;
-        if (BesoinEau == humiditeTerrain) nbrConditionsOK++;
-        if ((BesoinLumiere == TypeMeteo.Ensoleille) || (BesoinLumiere == TypeMeteo.Nuageux)) nbrConditionsOK++;
-        if (temperatureActuelle >= TemperaturePrefereeMin && temperatureActuelle <= TemperaturePrefereeMax) nbrConditionsOK++;
-
-        bool respectees = nbrConditionsOK > totalConditions / 2;
-        EstMorte = !respectees;
-        return respectees;
-    }
-
-    public string AfficherConditionsFavorites()
-    {
-        string informations = $"        Sol préféré : {SolPrefere}\n" +
-                              $"        Température préféré : de {TemperaturePrefereeMin} à {TemperaturePrefereeMax}\n" +
-                              $"        Humidité préférée du sol : {BesoinEau}\n";
-
-
-        return informations;
-    }
-
-
-    public bool Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
-    {
-        if (EstSemee && EstArrosee)
-        {
-            if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
-            {
-                NbrMoisDeCroissance = Math.Abs(NbrMoisDeCroissance - 2);
-            }
-            if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle, meteo))
-            {
-                Grandir();
-                NbrMoisDeCroissance++;
-                VitesseCroissance++;
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public int RecolterPlante()
+    //Récolte la plante si elle est prête.
+    // Réinitialise son état
+    // Retourne le nombre de semis récoltés (Production ou 0 si la plante n'est pas récoltable)
     {
         if (EstRecoltable)
         {
@@ -159,47 +103,74 @@ public abstract class Plante
             return Production;
         }
         else
-        {
             return 0;
-        }
     }
 
-    public void ApparaitreMauvaiseHerbe()
+
+    /////----------------- Méthodes liées à la croissance et aux événements aléatoires affectant les plantes
+
+    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, double temperatureActuelle)
+    // Méthode pour vérifier si les conditions sont respectées à l'aide d'un booléen
+    // Si au moins 50% des conditions sont défavorables, les plantes meurent
     {
-        Random random = new Random();
-        double probabiliteMauvaisesHerbes = random.Next(0, 100);  // génère une valeur entre 0 et 99
+        int totalConditions = 4;
+        int nbrConditionsFavorablesValidees = 0; //Compteur de conditions favorables qui sont validées
 
-        if (probabiliteMauvaisesHerbes < 30)  // Si la proba est inférieure à 30%
-        {
-            EstEntoureeParMauvaisesHerbes = true;
-        }
+        if (SolPrefere == typeSol)
+            nbrConditionsFavorablesValidees++;
 
-        if (EstEntoureeParMauvaisesHerbes == true)
-        {
-            NbrMoisAvecMauvaisesHerbesConsecutif++;
-        }
+        if (BesoinEau == humiditeTerrain)
+            nbrConditionsFavorablesValidees++;
 
-        if (NbrMoisAvecMauvaisesHerbesConsecutif > 3)
-        {
-            EstMorte = true;
-        }
+        if ((BesoinLumiere == TypeMeteo.Ensoleille) || (BesoinLumiere == TypeMeteo.Nuageux) || (BesoinLumiere == TypeMeteo.PetitePluie) || (BesoinLumiere == TypeMeteo.Pluie))
+            nbrConditionsFavorablesValidees++;
+
+        if ((temperatureActuelle >= TemperaturePrefereeMin) && (temperatureActuelle <= TemperaturePrefereeMax))
+            nbrConditionsFavorablesValidees++;
+
+        bool conditionsRespectees = nbrConditionsFavorablesValidees > totalConditions / 2; //Au moins 50% des conditions favorables respactées
+        EstMorte = !conditionsRespectees;
+        return conditionsRespectees;
     }
 
-    public void EtreMalade(Random random)
+    public bool Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
+    // Méthode qui gère la croissance de la plante
     {
-        double proba = random.Next(0, 100);
-        if (proba < 10)
-            EstMalade = true;
+        if (EstSemee && EstArrosee)//Pour croitre une plante doit être semée et arrosée au moins une fois
+        {
+            if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
+            {
+                NbrMoisDeCroissance = Math.Max(0, NbrMoisDeCroissance - 2);
+                //Si mauvaise météo, le temps de croissance de la plante va se rallonger 
+                //On simule cela en diminuant le nombre de mois déjà passés en croissance
+                // utilisation de Math.Max pour que le nombre de mois ne soit pas négatif
+            }
+            if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle))
+            // si la méthode ConditionsRespectees renvoie true, la plante ...
+            {
+                Grandir(); //... grandit
+                NbrMoisDeCroissance++;
 
-        if (EstMalade)
-            NbrMoisMaladeConsecutif++;
+                //les return servent à récupérer si oui ou non les conditions sont défavorables pour la plante
+                return false; // Conditions pas défavorables;
+            }
+            else
+                return true; // Conditions défavorables;
 
-        if (NbrMoisMaladeConsecutif > 3)
-            EstMorte = true;
+        }
+        return false; // Conditions pas défavorables;
     }
 
-    public override string ToString()
+    public abstract void ApparaitreMauvaiseHerbe(); //Attitudes différentes selon le type de plantes
+    public abstract void EtreMalade(Random random); //Attitudes différentes selon le type de plantes
+    public abstract void Pourrir();//Attitudes différentes selon le type de plantes
+
+
+
+    public override string ToString()//Résumé des conditions préférées des plantes
     {
-        return "";
+        return $"        Sol préféré : {SolPrefere}\n" +
+               $"        Température préféré : de {TemperaturePrefereeMin} à {TemperaturePrefereeMax}\n" +
+               $"        Humidité préférée du sol : {BesoinEau}\n";
     }
 }
