@@ -193,7 +193,8 @@ if (touchePays.KeyChar == '1')
 {
     paysSelectionne = "Haribo World";
     Console.WriteLine();
-    Console.WriteLine($"Veuillez sélectionner un terrain de Haribo World pour votre potager :");
+    Console.WriteLine($"🚜 Vous avez choisi le pays {paysSelectionne} pour votre potager\n");
+    Console.WriteLine($"        Veuillez sélectionner un terrain de Haribo World pour votre potager :");
     Console.WriteLine();
 
     for (int i = 0; i < tailleCarteTerrain; i++) // Affichage et choix des terrains disponibles
@@ -206,6 +207,7 @@ if (touchePays.KeyChar == '1')
 }
 
 Pays pays = new Pays(paysSelectionne);
+
 ConsoleKeyInfo toucheTerrain = AttendreToucheValide("Erreur. Réessayez.", '1', '2');
 
 Terrain? terrain = null!;
@@ -217,7 +219,7 @@ if (toucheTerrain.KeyChar == '1')
     terrain = TerrainFactory.CreerTerrainAcidule("langueDeChat", meteo);
     meteo = new Meteo(compteurMois, terrain);
     terrain.meteo = meteo;
-    pays.AddTerrain(terrain);
+    pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
     Console.WriteLine($"Vous avez choisi le terrain acidulé! \n");
 }
@@ -226,7 +228,7 @@ if (toucheTerrain.KeyChar == '2')
     terrain = TerrainFactory.CreerTerrainSucre("Dragibus", meteo);
     meteo = new Meteo(compteurMois, terrain);
     terrain.meteo = meteo;
-    pays.AddTerrain(terrain);
+    pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteSucree("Dragibus");
     Console.WriteLine($"Vous avez choisi le terrain sucré! \n");
 }
@@ -279,7 +281,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
     Console.WriteLine();
 
     terrain.AfficherLeSolde();
-    nouvelleMeteo.AfficherConditions();
+    Console.WriteLine(nouvelleMeteo.ToString());
 
     Console.WriteLine("Appuyez sur i pour avoir les informations sur votre terrain et vos plantes sinon appuyez sur Entrée pour continuer");
     ConsoleKeyInfo informationsJeu = AttendreToucheValide("Erreur. Réessayez.", 'i', '\r');
