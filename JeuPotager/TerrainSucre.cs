@@ -8,9 +8,10 @@ public class TerrainSucre : Terrain
             largeurTerrain: 8,
             typeSol: "sucre",
             humiditeSol: "tres humide",
-            niveauHumiditeSol: 6,
+            niveauHumiditeSol: 18,
             temperatureConsigne: 20.5,
-            meteo)
+            meteo,
+            risquePresenceIntrus: 10)
     {
         Nom = nom;
         Meteo = meteo;

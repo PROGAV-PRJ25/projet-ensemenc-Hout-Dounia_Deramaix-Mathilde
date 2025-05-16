@@ -8,9 +8,10 @@ public class TerrainAcidule : Terrain
             largeurTerrain: 5,
             typeSol: "acide",
             humiditeSol: "humide",
-            niveauHumiditeSol: 4,
+            niveauHumiditeSol: 9,
             temperatureConsigne: 40.5,
-            meteo)
+            meteo,
+            risquePresenceIntrus: 10)
     {
         Nom = nom;
         Meteo = meteo;

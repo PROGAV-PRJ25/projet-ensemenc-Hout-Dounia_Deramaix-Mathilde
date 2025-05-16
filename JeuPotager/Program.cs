@@ -92,6 +92,7 @@ string[] moisSuivant = {
 int tailleCartePays = 11;
 int tailleCarteTerrain = 13;
 bool partiefinie = false;
+bool terrainVideEtPlusDeSemis = false;
 int compteurMois = 1;
 string paysSelectionne = "";
 
@@ -158,26 +159,25 @@ Console.WriteLine("- Surveiller leur état de santé : si plus de 50% des condit
 Console.WriteLine("- Attention : certaines plantes peuvent tomber malades de manière imprévisible 🦠");
 Console.WriteLine("- Protéger ton potager : des intrus rôdent et des événements inattendus peuvent tout bouleverser 🌪️🐰\n");
 Console.ForegroundColor = ConsoleColor.Blue;
-Console.WriteLine("⏱️ Deux modes de jeu :\n");
+Console.WriteLine("⏱️  Deux modes de jeu :\n");
 Console.ResetColor();
 
 Console.WriteLine("Appuyez sur i pour plus d'informations sinon appuyez sur Entrée pour passez à la suite");
 ConsoleKeyInfo informations = AttendreToucheValide("Erreur. Réessayez.", 'i', '\r');
 if (informations.KeyChar == 'i')
 {
-    Console.WriteLine("1️⃣  Mode Classique (smois après mois) :");
+    Console.WriteLine("1️⃣  Mode Classique (mois après mois) :");
     Console.WriteLine("   🌤️ Planifie calmement : sème, arrose, protège, récolte...");
-    Console.WriteLine("   🐛 Gère les maladies, les nuisibles, le climat et les températures");
+    Console.WriteLine("   🐛 Gère les maladies, les nuisibles et les températures");
     Console.WriteLine("   🌻 Optimise chaque action pour faire pousser un jardin florissant\n");
     Console.WriteLine("2️⃣  Mode Urgence (réactions en temps réel) :");
     Console.WriteLine("   ⚡ Réagis au quart de tour face aux tempêtes ou à l’apparition d’animaux !");
     Console.WriteLine("   🧯 Déclenche des actions rapides pour sauver tes cultures");
-    Console.WriteLine("   ❗ Petit rappel : les animaux sont sacrés, interdiction de leur faire du mal \n");
 }
 
 Console.WriteLine("Prêt à cultiver ton jardin de rêve et devenir le roi ou la reine des potagers ? À toi de jouer !\n");
 Console.WriteLine();
-Console.WriteLine("Veuillez sélectionner un pays pour votre potager à l'aide de son numéro parmi les pays suivants :");
+Console.WriteLine("     Veuillez sélectionner un pays pour votre potager à l'aide de son numéro parmi les pays suivants :");
 Console.WriteLine();
 
 for (int i = 0; i < tailleCartePays; i++)// Affichage et choix des pays disponibles
@@ -221,7 +221,7 @@ if (toucheTerrain.KeyChar == '1')
     terrain.Meteo = meteo;
     pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteAcidulee("langueDeChat");
-    Console.WriteLine($"Vous avez choisi le terrain acidulé! \n");
+    Console.WriteLine($"🚜 Vous avez choisi le terrain acidulé! \n");
 }
 if (toucheTerrain.KeyChar == '2')
 {
@@ -230,10 +230,10 @@ if (toucheTerrain.KeyChar == '2')
     terrain.Meteo = meteo;
     pays.AjouterTerrain(terrain);
     planteUtilisee = PlanteFactory.CreerPlanteSucree("Dragibus");
-    Console.WriteLine($"Vous avez choisi le terrain sucré! \n");
+    Console.WriteLine($"🚜 Vous avez choisi le terrain sucré! \n");
 }
 
-Console.WriteLine("Appuyez sur Entrée pour commencer la partie !");
+Console.WriteLine("     Appuyez sur Entrée pour commencer la partie !");
 ConsoleKeyInfo debutJeu = AttendreToucheValide("Erreur. Réessayez.", '\r');
 do
 {
@@ -263,11 +263,11 @@ do
 }
 while (compteurMois == 1);
 
-while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
+while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie) && (!terrainVideEtPlusDeSemis))
 {
     Meteo nouvelleMeteo = new Meteo(compteurMois, terrain!);
     terrain!.MiseAJourMeteo(nouvelleMeteo);
-    terrain.UtiliserFonctionnalitesAleatoire(meteo);
+
     terrain.EtreMort();
 
     Console.Clear();
@@ -282,6 +282,8 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
 
     terrain.AfficherLeSolde();
     Console.WriteLine(nouvelleMeteo.ToString());
+
+    terrain.UtiliserFonctionnalitesAleatoire(nouvelleMeteo);
 
     Console.WriteLine("Appuyez sur i pour avoir les informations sur votre terrain et vos plantes sinon appuyez sur Entrée pour continuer");
     ConsoleKeyInfo informationsJeu = AttendreToucheValide("Erreur. Réessayez.", 'i', '\r');
@@ -317,7 +319,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
         Console.WriteLine("7. Vendre des semis");
         Console.WriteLine("8. Ne rien faire");
 
-        while (!choix && (!terrain.EstRecouvertDePlantesMortes)) // On boucle jusqu'à ce que l'utilisateur fasse un choix valide
+        while (!choix && (!terrain.EstRecouvertDePlantesMortes) && (!terrainVideEtPlusDeSemis)) // On boucle jusqu'à ce que l'utilisateur fasse un choix valide
         {
             terrain.EtreMort();
             ConsoleKeyInfo actionPlante = Console.ReadKey(intercept: true);
@@ -371,7 +373,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie))
         }
     }
     Console.WriteLine(terrain.AfficherResumeTerrain());
-    terrain.CroissancePlantes(terrain.TypeSol, terrain.HumiditeSol, meteo.Temperature, meteo);
+    terrain.CroissancePlantes(terrain.TypeSol!, terrain.HumiditeSol!, meteo.Temperature, meteo.Type);
     PasserAuMoisSuivant();
 }
 if (terrain.EstRecouvertDePlantesMortes == true)
@@ -384,5 +386,11 @@ else if (partiefinie == true)
 {
     Console.ForegroundColor = ConsoleColor.Red;
     Console.WriteLine("\nDommage vous étiez en bonne voie !");
+    Console.ResetColor();
+}
+else if (terrainVideEtPlusDeSemis == true)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("\nPERDU ! Votre terrain est vide et vous n'avez plus de semis en stock !");
     Console.ResetColor();
 }

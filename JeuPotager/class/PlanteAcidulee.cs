@@ -5,8 +5,8 @@ public class PlanteAcidulee : Plante
         nature: "acidulée",
         solPref: "acide",
         besoinEau: "humide",
-        temperaturePreferemin: 40,
-        temperaturePreferemax: 45,
+        temperaturePreferemin: 35,
+        temperaturePreferemax: 50,
         production: 3,
         nbrMoisAvantFloraison: 6,
         prixUnitaireDeLaPlante: 10)
@@ -49,13 +49,27 @@ public class PlanteAcidulee : Plante
             EstMorte = true;
     }
 
-    public override void Pourrir()
+    public override void Pourrir(Plante plante)
     {
-        if (EstRecoltable)
-            NbrMoisRecoltableMaisPasRecoltee++;
+        if (plante.EstRecoltable)
+        {
+            if (plante.NbrMoisDeCroissance <= plante.NbrMoisAvantFloraison)
+            {
+                plante.EstRecoltable = false;
+            }
+            else
+            {
+                plante.NbrMoisRecoltableMaisPasRecoltee++;
+            }
 
-        if (NbrMoisRecoltableMaisPasRecoltee > 2) // Le produit de ce type de plante se gâche vite
-            EstMorte = true;
+            if (plante.NbrMoisRecoltableMaisPasRecoltee > 5) // Le produit ne se conserve plus
+            {
+                plante.EstMorte = true;
+                Console.WriteLine("Oh non, une plante est morte car elle n'a pas été récoltée à temps !");
+            }
+        }
+
+        Console.WriteLine($"Mois sans récolte : {plante.NbrMoisRecoltableMaisPasRecoltee}");
     }
 }
 

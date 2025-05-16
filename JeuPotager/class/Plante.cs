@@ -4,7 +4,6 @@ public abstract class Plante
     public string? Nature { get; set; }
     public string? SolPrefere { get; set; }
     public string? BesoinEau { get; set; }
-    public TypeMeteo BesoinLumiere { get; set; }
     public double TemperaturePrefereeMin { get; set; }
     public double TemperaturePrefereeMax { get; set; }
     public int Production { get; set; } //Nombre de semis récoltés après la récolte d'une plante
@@ -32,6 +31,8 @@ public abstract class Plante
         {
             return NbrMoisDeCroissance >= NbrMoisAvantFloraison;
         }
+        set { }
+
     }
 
     public Plante(string nom, string nature, string solPref, string besoinEau, double temperaturePreferemin,
@@ -58,8 +59,11 @@ public abstract class Plante
     public void Grandir() //Remplacer 🌱 par 🌿 lorsque le temps de croissance de la plante à atteint 
                           // la moitié du nombre de mois nécessaire à la floraison
     {
+        Console.WriteLine(NbrMoisDeCroissance);
         if (NbrMoisDeCroissance >= (NbrMoisAvantFloraison / 2))
             AGrandi = true;
+        else if (NbrMoisDeCroissance < (NbrMoisAvantFloraison / 2))
+            AGrandi = false;
     }
 
     public void Semer() // Marque la plante comme semée
@@ -109,7 +113,7 @@ public abstract class Plante
 
     /////----------------- Méthodes liées à la croissance et aux événements aléatoires affectant les plantes
 
-    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, double temperatureActuelle)
+    private bool ConditionsRespectees(string typeSol, string humiditeTerrain, double temperatureActuelle, TypeMeteo meteoActuelle)
     // Méthode pour vérifier si les conditions sont respectées à l'aide d'un booléen
     // Si au moins 50% des conditions sont défavorables, les plantes meurent
     {
@@ -122,21 +126,23 @@ public abstract class Plante
         if (BesoinEau == humiditeTerrain)
             nbrConditionsFavorablesValidees++;
 
-        if ((BesoinLumiere == TypeMeteo.Ensoleille) || (BesoinLumiere == TypeMeteo.Nuageux) || (BesoinLumiere == TypeMeteo.PetitePluie) || (BesoinLumiere == TypeMeteo.Pluie))
+        if (meteoActuelle == TypeMeteo.Ensoleille || meteoActuelle == TypeMeteo.Pluie
+        || meteoActuelle == TypeMeteo.PetitePluie || meteoActuelle == TypeMeteo.Nuageux)
+            //Ceux sont les besoin en lumière de la plante (ensoleillé, Pluie, Nuagueux et petitePluie)
             nbrConditionsFavorablesValidees++;
 
         if ((temperatureActuelle >= TemperaturePrefereeMin) && (temperatureActuelle <= TemperaturePrefereeMax))
             nbrConditionsFavorablesValidees++;
 
-        bool conditionsRespectees = nbrConditionsFavorablesValidees > totalConditions / 2; //Au moins 50% des conditions favorables respactées
+        bool conditionsRespectees = nbrConditionsFavorablesValidees >= (totalConditions / 2.0); //Au moins 50% des conditions favorables respactées
         EstMorte = !conditionsRespectees;
         return conditionsRespectees;
     }
 
-    public bool Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo)
+    public bool Croissance(string typeSol, string humiditeTerrain, double temperatureActuelle, Meteo meteo, TypeMeteo meteoActuelle)
     // Méthode qui gère la croissance de la plante
     {
-        if (EstSemee && EstArrosee)//Pour croitre une plante doit être semée et arrosée au moins une fois
+        if (EstSemee)//Pour croitre une plante doit être semée
         {
             if (meteo.Type == TypeMeteo.ForteTempete || meteo.Type == TypeMeteo.PluiesBattantes)
             {
@@ -145,7 +151,7 @@ public abstract class Plante
                 //On simule cela en diminuant le nombre de mois déjà passés en croissance
                 // utilisation de Math.Max pour que le nombre de mois ne soit pas négatif
             }
-            if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle))
+            if (ConditionsRespectees(typeSol, humiditeTerrain, temperatureActuelle, meteoActuelle))
             // si la méthode ConditionsRespectees renvoie true, la plante ...
             {
                 Grandir(); //... grandit
@@ -163,7 +169,7 @@ public abstract class Plante
 
     public abstract void ApparaitreMauvaiseHerbe(); //Attitudes différentes selon le type de plantes
     public abstract void EtreMalade(Random random); //Attitudes différentes selon le type de plantes
-    public abstract void Pourrir();//Attitudes différentes selon le type de plantes
+    public abstract void Pourrir(Plante plante);//Attitudes différentes selon le type de plantes
 
 
 
