@@ -1,11 +1,11 @@
-public enum TypeMeteo
+public enum TypeMeteo  //Définition d'une liste prédéfinie de type de météo
 {
-    Ensoleille,        // soleil +
-    Nuageux,           // soleil -
+    Ensoleille,        // lumière ++   pluie = 0;
+    Nuageux,           // lumière +    pluie = 0; 
     PetitePluie,       // pluie +
     Pluie,             // pluie ++
-    PluiesBattantes,   // pluie +++
-    ForteTempete       // vent +++ et pluie +++
+    PluiesBattantes,   // pluie +++ avec vent
+    ForteTempete       // pluie +++ avec vent
 }
 
 public class Meteo
