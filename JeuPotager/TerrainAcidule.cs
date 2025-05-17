@@ -8,7 +8,7 @@ public class TerrainAcidule : Terrain
             largeurTerrain: 5,
             typeSol: "acide",
             humiditeSol: "humide",
-            niveauHumiditeSol: 9,
+            niveauHumiditeSol: 10,
             temperatureConsigne: 40.5,
             meteo,
             risquePresenceIntrus: 10)

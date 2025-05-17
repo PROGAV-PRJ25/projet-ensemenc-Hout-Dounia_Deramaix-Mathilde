@@ -89,8 +89,8 @@ public class Meteo
 
     public override string ToString() //Résumé de la météo
     {
-        return $"🌡️  Température : {Temperature}°C\n" +
-               $"💧  Précipitations : {TauxPrecipitations} mm\n" +
-               $"📡  Type de météo : {Type}\n";
+        return $"        Température : {Temperature}°C\n" +
+               $"        Précipitations : {TauxPrecipitations} mm\n" +
+               $"        Type de météo : {Type}\n";
     }
 }

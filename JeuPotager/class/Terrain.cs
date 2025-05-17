@@ -125,52 +125,62 @@ public class Terrain
 
     ///////-------------------------------------------- Etat du terrain et des plantes
 
-    public void EtreMort() //Méthode qui vérifie si le terrain est rempli de plantes mortes
+    public void VerifierTerrainMorts()
     {
-        int compteurPlantesMortes = 0;
+        int nbPlantesReelles = 0;         // Plantes réellement présentes (non null), on recalcule pour etre sur que ce soit à jour
+        int compteurPlantesMortes = 0;    // Plantes présentes et mortes
+
         for (int i = 0; i < LongueurTerrain; i++)
         {
             for (int j = 0; j < LargeurTerrain; j++)
             {
-                var plante = Plantes[i][j]; //Récupère la plante située en (i,j)
-                if (plante != null && plante!.EstMorte == true)
-                    compteurPlantesMortes++;
+                var plante = Plantes[i][j];
+
+                if (plante != null && plante.EstSemee)
+                {
+                    nbPlantesReelles++;
+
+                    if (plante.EstMorte)
+                    {
+                        compteurPlantesMortes++;
+                    }
+                }
             }
         }
-        if (compteurPlantesMortes == NbPlantes)
+
+        // Vérifie si toutes les plantes réelles sont mortes
+        if (nbPlantesReelles > 0 && compteurPlantesMortes == nbPlantesReelles && StockTotalDeSemis <= 0)
         {
             EstRecouvertDePlantesMortes = true;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" Toutes les plantes du terrain sont mortes ... 😢");
+            Console.ResetColor();
         }
     }
 
+
+
+
     public void EtreVide() //Méthode qui vérifie si le terrain est vide
     {
-        int compteurPasDePlante = 0;
-        for (int i = 0; i < LongueurTerrain; i++)
-        {
-            for (int j = 0; j < LargeurTerrain; j++)
-            {
-                var plante = Plantes[i][j]; //Récupère la plante située en (i,j)
-                if (plante == null)
-                    compteurPasDePlante++;
-            }
-        }
-        if (compteurPasDePlante == NbPlantes)
+        if (NbPlantes <= 0)
             EstVide = true;
     }
 
     public bool VerifierFinDePartie()
     {
-        //Vérifier l'état de vide du terrain
-        EtreVide();
+        EtreVide(); // Met à jour l’état du terrain (vide ou non)
 
-        // Vérifie si le terrain est vide ET qu'il n'y a plus de semis
-        if (EstVide && StockTotalDeSemis <= 0)
+        if (EstVide && (StockTotalDeSemis <= 0))
         {
-            return true;//Fin de partie
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(" Votre terrain est vide et vous n'avez plus de semis... 😢");
+            Console.ResetColor();
+            // La partie est terminée si le terrain est vide et qu’il n’y a plus de semis
+            return true;
         }
-        return false;
+        else
+            return false;
     }
 
     public void CroissancePlantes(string typeSol, string humiditeTerrain, double temperatureActuelle, TypeMeteo meteoActuelle)
@@ -417,12 +427,14 @@ public class Terrain
                 var plante = Plantes[i][j];
 
                 // Vérifie si la plante existe, est semée et prête à être récoltée
-                if (plante != null && plante.EstRecoltable && plante.EstSemee)
+                if (plante != null && plante.EstRecoltable && plante.EstSemee && !plante.EstMorte
+                && !plante.EstMalade && !plante.EstEntoureeParMauvaisesHerbes)
                 {
                     int quantite = plante.RecolterPlante();  // Récupère la quantité poduite par cette plante
                     totalRecolte += quantite;                // L'ajoute au total récolté
                     StockTotalDeSemis += quantite;           // Met à jour le stock total de semis disponibles
                     Plantes[i][j] = null;                    // Libère la case, terrain redevient vide
+                    NbPlantes--;
                     auMoinsUneRecoltee = true;               // Signale qu'une récolte a eu lieu
                 }
             }
@@ -569,7 +581,9 @@ public class Terrain
                     return (bruitFait, pareVentMis);
                 case '3':
                     Console.WriteLine("\n   Vous ne faites rien.\n");
-                    return (false, false);
+                    bruitFait = false;
+                    pareVentMis = false;
+                    return (bruitFait, pareVentMis);
                 default: //Si erreur de saisie
                     Console.WriteLine("\n   Option invalide. Veuillez réessayer.\n");
                     break;
@@ -579,67 +593,104 @@ public class Terrain
 
     private void GérerConséquencesUrgence(bool bruitFait, bool pareVentMis)
     {
-        int tentatives = 0;
-        int maxTentatives = 1000; // Limite de sécurité pour éviter de tomber dans une boucle infinie s'il n'y a pas de plantes présentes sur le terrain
-                                  // On prend un grand nombre par sécurité
+        bool auMoinsUneplanteAttaquee = false;
 
-        //Cas d'intrus détecté
-        if (!bruitFait && IntrusDetecte)
+        // Méthode locale qui vérifie s’il existe au moins une plante semée et vivante sur le terrain
+        bool ExistePlanteValide()
         {
-            bool planteAttaquee = false;
-
-            //Continue tant que la plante n'est pas attaquée ET il n'y a plus de tentatives possible
-            while (!planteAttaquee && tentatives < maxTentatives)
+            for (int i = 0; i < LongueurTerrain; i++)
             {
-                //Choix aléatoire de la plante avec un x et un y pris au hasard
-                int x = Random.Next(0, LongueurTerrain);
-                int y = Random.Next(0, LargeurTerrain);
-
-                // Vérifie que la case contient une plante ET qu'elle soit déjà semée ET qu'elle est en vie
-                if (Plantes[x][y] != null && Plantes[x][y]!.EstSemee && !Plantes[x][y]!.EstMorte)
+                for (int j = 0; j < LargeurTerrain; j++)
                 {
-                    Plantes[x][y]!.EstMorte = true; //Plante est tuée par l'intrus
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n   Une plante est morte dans votre jardin à cause des intrus...\n");
-                    Console.ResetColor();
-                    planteAttaquee = true;
+                    var plante = Plantes[i][j];
+                    if (plante != null && plante.EstSemee && !plante.EstMorte)
+                        return true;
                 }
             }
+            return false; // Aucune plante valide trouvée
+        }
 
-            if (!planteAttaquee)//Cas d'une absence de plante sur le terrain ; Message d'erreur
+        // ---------- Cas d'intrus détecté ----------
+        if (!bruitFait && IntrusDetecte) // Si le joueur n’a pas fait de bruit et qu’il y a des intrus
+        {
+            if (!ExistePlanteValide()) // Si aucune plante n’est présente, inutile de tenter une attaque
+            {
                 Console.WriteLine("\n Aucune plante n'est présente sur le terrain.\n");
-
-        }
-
-        //Cas d’intempérie détectée
-        if (!pareVentMis && IntemperieDetectee)
-        {
-            bool planteAttaquee = false;
-
-            //Continue tant que la plante n'est pas attaquée ET il n'y a plus de tentatives possible
-            while (!planteAttaquee && tentatives < maxTentatives)
+            }
+            else
             {
-                //Choix aléatoire de la plante avec un x et un y pris au hasard
-                int x = Random.Next(0, LongueurTerrain);
-                int y = Random.Next(0, LargeurTerrain);
+                int tentatives = 0;
+                bool planteAttaquee = false;
 
-                // Vérifie que la case contient une plante ET qu'elle soit déjà semée ET qu'elle est en vie
-                if (Plantes[x][y] != null && Plantes[x][y]!.EstSemee && !Plantes[x][y]!.EstMorte)
+                // Tentatives aléatoires pour trouver une plante à attaquer
+                while (!planteAttaquee && tentatives < 1000)
                 {
-                    Plantes[x][y] = null; // La plante est déracinée par le mauvais temps donc ajustement du nombre de plantes présentes
-                    NbPlantes--;
+                    int x = Random.Next(0, LongueurTerrain);
+                    int y = Random.Next(0, LargeurTerrain);
 
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n   Une plante a été déracinée dans votre jardin à cause du vent...");
-                    Console.ResetColor();
-                    planteAttaquee = true;
+                    var plante = Plantes[x][y];
+
+                    // Si la plante est présente, semée, et vivante → elle peut être attaquée
+                    if (plante != null && plante.EstSemee && !plante.EstMorte)
+                    {
+                        plante.EstMorte = true; // L'intrus tue la plante
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n   Une plante est morte dans votre jardin à cause des intrus...\n");
+                        Console.ResetColor();
+
+                        planteAttaquee = true;
+                        auMoinsUneplanteAttaquee = true;
+                    }
+
+                    tentatives++;
                 }
             }
-
-            if (!planteAttaquee)//Cas d'une absence de plante sur le terrain ; Message d'erreur
-                Console.WriteLine("\n Aucune plante n'est présente sur le terrain.");
         }
+
+        // ---------- Cas d’intempérie détectée ----------
+        if (!pareVentMis && IntemperieDetectee) // Si le joueur n’a pas mis de pare-vent et qu’il y a du vent
+        {
+            if (!ExistePlanteValide()) // Aucun effet possible s’il n’y a aucune plante
+            {
+                Console.WriteLine("\n Aucune plante n'est présente sur le terrain.\n");
+            }
+            else
+            {
+                int tentatives = 0;
+                bool planteAttaquee = false;
+
+                // Tentatives aléatoires pour trouver une plante à déraciner
+                while (!planteAttaquee && tentatives < 1000)
+                {
+                    int x = Random.Next(0, LongueurTerrain);
+                    int y = Random.Next(0, LargeurTerrain);
+
+                    var plante = Plantes[x][y];
+
+                    // Si la plante est semée, présente et vivante → elle peut être déracinée
+                    if (plante != null && plante.EstSemee && !plante.EstMorte)
+                    {
+                        Plantes[x][y] = null; // Elle est retirée du terrain
+                        NbPlantes--;         // Décrémentation du nombre de plantes présentes
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n   Une plante a été déracinée dans votre jardin à cause du vent...");
+                        Console.ResetColor();
+
+                        planteAttaquee = true;
+                        auMoinsUneplanteAttaquee = true;
+                    }
+
+                    tentatives++;
+                }
+            }
+        }
+
+        // ---------- Si aucune attaque n'a été faite, avertir le joueur ----------
+        if (!auMoinsUneplanteAttaquee)
+            Console.WriteLine("\n Aucune plante n'est présente sur le terrain.");
     }
+
 
 
     ///////------------------------------- Méthode liées à des évènements aléatoires
@@ -649,8 +700,6 @@ public class Terrain
         CalculerHumiditeSol(Meteo);
         ApparaitreMauvaiseHerbe();
         TomberMalade();
-        Pourrir();
-        AfficherParcelle();
     }
 
     public void ApparaitreMauvaiseHerbe()// Parcourt tout le terrain et fait apparaître des mauvaises herbes sur les plantes semées
@@ -679,19 +728,19 @@ public class Terrain
             {
                 var plante = Plantes[i][j];
 
-                // Vérifie que la case contient une plante, qu'elle est semée et récoltable
                 if (plante != null && plante.EstSemee && plante.EstRecoltable)
                 {
-                    plante!.Pourrir(plante); // Appel à la méthode de Plante.cs
-                    plantesOntPourri = true;
+                    if (plante.Pourrir()) //Vérifie que la plante a pourrie
+                    {
+                        plantesOntPourri = true;
+                    }
                 }
             }
         }
 
         if (plantesOntPourri)
-            Console.WriteLine(" Vos plantes ont pouries... 😔");
+            Console.WriteLine("Oh non, vous n'avez pas récolter vos plantes à temps, certaines ont pourris ! 😔");
     }
-
 
     public void TomberMalade()// Simule le risque aléatoire de contamination par une maladie pour chaque plante semée
     {
@@ -744,20 +793,20 @@ public class Terrain
         {
             HumiditeSol = "stress hydrique";
         }
-        else if (NiveauHumiditeSol < 16)
+        else if (NiveauHumiditeSol < 24)
         {
             HumiditeSol = "humide";
         }
-        else if (NiveauHumiditeSol < 24)
-            HumiditeSol = "tres humide";
+        else if (NiveauHumiditeSol < 40)
+            HumiditeSol = "tresHumide";
         else
         {
-            HumiditeSol = "extremement humide";
+            HumiditeSol = "extremementHumide";
         }
     }
 
     ///////------------------------------- Méthode liées à l'affichage d'informations
-    public string AfficherResumeTerrain()
+    public string AfficherResumeTerrain()//Résumé de l'état des plantes
     {
         int nbrMalades = 0;
         int nbrMauvaisesHerbes = 0;
@@ -799,14 +848,14 @@ public class Terrain
         return resume;
     }
 
-    public void AfficherLeSolde()
+    public void AfficherLeSolde() //Résumé des informations du solde bancaire du joueur
     {
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"   💰  Solde actuel du compte : {PiecesOrEnChocolat} pièces d'or en chocolat");
+        Console.WriteLine($"        💰  Solde actuel du compte : {PiecesOrEnChocolat} pièces d'or en chocolat\n");
         Console.ResetColor();
     }
 
-    public override string ToString()
+    public override string ToString()//Résumé des informations du terrain
     {
         return $"       Terrain {Nom} ({Superficie} m²)\n" +
                $"       Type de sol : {TypeSol}\n" +

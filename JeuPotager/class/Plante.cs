@@ -29,7 +29,10 @@ public abstract class Plante
     {
         get
         {
-            return NbrMoisDeCroissance >= NbrMoisAvantFloraison;
+            if (NbrMoisDeCroissance >= NbrMoisAvantFloraison)
+                return true;
+            else
+                return false;
         }
         set { }
 
@@ -59,7 +62,6 @@ public abstract class Plante
     public void Grandir() //Remplacer 🌱 par 🌿 lorsque le temps de croissance de la plante à atteint 
                           // la moitié du nombre de mois nécessaire à la floraison
     {
-        Console.WriteLine(NbrMoisDeCroissance);
         if (NbrMoisDeCroissance >= (NbrMoisAvantFloraison / 2))
             AGrandi = true;
         else if (NbrMoisDeCroissance < (NbrMoisAvantFloraison / 2))
@@ -84,6 +86,7 @@ public abstract class Plante
         EstMalade = false;
         AGrandi = false;
         EstEntoureeParMauvaisesHerbes = false;
+        NbrMoisDeCroissance = 0;
     }
 
     public void Arroser() //Marque comme arrosée une plante que si elle est semée sinon message d'erreur
@@ -97,10 +100,12 @@ public abstract class Plante
     // Réinitialise son état
     // Retourne le nombre de semis récoltés (Production ou 0 si la plante n'est pas récoltable)
     {
-        if (EstRecoltable)
+        if (EstRecoltable && !EstMorte && !EstMalade && !EstEntoureeParMauvaisesHerbes)
+        //Pas récoltable si la plante est malade et/ou avec des mauvaises herbes
         {
             EstSemee = false;
             EstArrosee = false;
+            EstMorte = false;
             NbrMoisDeCroissance = 0;
             NbrMoisAvecMauvaisesHerbesConsecutif = 0;
             NbrMoisMaladeConsecutif = 0;
@@ -119,7 +124,7 @@ public abstract class Plante
     {
         int totalConditions = 4;
         int nbrConditionsFavorablesValidees = 0; //Compteur de conditions favorables qui sont validées
-
+        Console.WriteLine($"{typeSol}={SolPrefere} ; {humiditeTerrain}={BesoinEau} ; {meteoActuelle} ; {TemperaturePrefereeMin}<{temperatureActuelle}<{TemperaturePrefereeMax}");
         if (SolPrefere == typeSol)
             nbrConditionsFavorablesValidees++;
 
@@ -169,7 +174,7 @@ public abstract class Plante
 
     public abstract void ApparaitreMauvaiseHerbe(); //Attitudes différentes selon le type de plantes
     public abstract void EtreMalade(Random random); //Attitudes différentes selon le type de plantes
-    public abstract void Pourrir(Plante plante);//Attitudes différentes selon le type de plantes
+    public abstract bool Pourrir();//Attitudes différentes selon le type de plantes
 
 
 

@@ -7,9 +7,9 @@ public class TerrainSucre : Terrain
             longueurTerrain: 4,
             largeurTerrain: 8,
             typeSol: "sucre",
-            humiditeSol: "tres humide",
-            niveauHumiditeSol: 18,
-            temperatureConsigne: 20.5,
+            humiditeSol: "tresHumide",
+            niveauHumiditeSol: 26,
+            temperatureConsigne: 20,
             meteo,
             risquePresenceIntrus: 10)
     {

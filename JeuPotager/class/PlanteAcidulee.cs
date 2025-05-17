@@ -49,27 +49,21 @@ public class PlanteAcidulee : Plante
             EstMorte = true;
     }
 
-    public override void Pourrir(Plante plante)
+    public override bool Pourrir()
     {
-        if (plante.EstRecoltable)
+        if (!EstRecoltable || EstMorte)
+            return false; // Pas concernée par la pourriture (pas encore récoltable ou déjà morte)
+
+        NbrMoisRecoltableMaisPasRecoltee++;
+
+        if (NbrMoisRecoltableMaisPasRecoltee > 2)//Au delà de 2 mois en étant récoltable, le produit de la plante pourri
+        //Ce type de plante a un produit qui se gache vite
         {
-            if (plante.NbrMoisDeCroissance <= plante.NbrMoisAvantFloraison)
-            {
-                plante.EstRecoltable = false;
-            }
-            else
-            {
-                plante.NbrMoisRecoltableMaisPasRecoltee++;
-            }
-
-            if (plante.NbrMoisRecoltableMaisPasRecoltee > 5) // Le produit ne se conserve plus
-            {
-                plante.EstMorte = true;
-                Console.WriteLine("Oh non, une plante est morte car elle n'a pas été récoltée à temps !");
-            }
+            EstMorte = true;
+            EstRecoltable = false; //Réinitialisation de certains état
+            return true;
         }
-
-        Console.WriteLine($"Mois sans récolte : {plante.NbrMoisRecoltableMaisPasRecoltee}");
+        return false;
     }
 }
 
