@@ -1,15 +1,15 @@
 public class Terrain
 {
-    public string? Nom { get; set; }
-    public double Superficie { get; set; }
-    public int LongueurTerrain { get; set; }
-    public int LargeurTerrain { get; set; }
-    public string? TypeSol { get; set; }
-    public string? HumiditeSol { get; set; }
-    public double NiveauHumiditeSol { get; set; }
-    public double TemperatureConsigne { get; set; } //Température consigne du terrain pour la météo
-    public List<List<Plante?>> Plantes { get; set; } = new(); // grille de plantes (null = vide) ; utile pour ne pas gérer les coordonées des plantes (x,y)
-    public int? CapaciteMaxPlantes { get; set; } //Valeur calculée à partir de la longueur et de la largueur
+    public string? Nom { get;  set; }
+    public double Superficie { get; private set; }
+    public int LongueurTerrain { get; private set; }
+    public int LargeurTerrain { get; private set; }
+    public string? TypeSol { get; private set; }
+    public string? HumiditeSol { get; private set; }
+    public double NiveauHumiditeSol { get; private set; }
+    public double TemperatureConsigne { get; private set; } //Température consigne du terrain pour la météo
+    public List<List<Plante?>> Plantes { get; private set; } = new(); // grille de plantes (null = vide) ; utile pour ne pas gérer les coordonées des plantes (x,y)
+    public int? CapaciteMaxPlantes { get; private set; } //Valeur calculée à partir de la longueur et de la largueur
     public int NbPlantes { get; private set; } = 0; //Nombre de plantes présentes et en vie sur le terrain
     public double PiecesOrEnChocolat { get; private set; } = 0; //Solde bancaire du joueur
     public int? StockTotalDeSemis { get; private set; } = 0;//Stock de semis disponible pour le terrain
@@ -20,10 +20,10 @@ public class Terrain
 
 
     //-------------  ETAT DU TERRAIN (BOOLEEN)
-    public bool EstRecouvertDePlantesMortes { get; set; } = false;
+    public bool EstRecouvertDePlantesMortes { get; private set; } = false;
     private bool IntrusDetecte { get; set; } = false;
     private bool IntemperieDetectee { get; set; } = false;
-    public bool EstVide { get; set; } = false;
+    public bool EstVide { get; private set; } = false;
 
 
     public Terrain(string nom, double superficie, int longueurTerrain, int largeurTerrain,

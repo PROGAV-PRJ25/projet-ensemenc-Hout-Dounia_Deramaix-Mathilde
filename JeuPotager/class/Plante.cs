@@ -1,13 +1,13 @@
 public abstract class Plante
 {
-    public string? Nom { get; set; }
-    public string? Nature { get; set; }
-    public string? SolPrefere { get; set; }
-    public string? BesoinEau { get; set; }
-    public double TemperaturePrefereeMin { get; set; }
-    public double TemperaturePrefereeMax { get; set; }
-    public int Production { get; set; } //Nombre de semis récoltés après la récolte d'une plante
-    public int NbrMoisDeCroissance { get; set; } = 0;
+    public string? Nom { get; private set; }
+    public string? Nature { get; private set; }
+    public string? SolPrefere { get; private set; }
+    public string? BesoinEau { get; private set; }
+    public double TemperaturePrefereeMin { get; private set; }
+    public double TemperaturePrefereeMax { get; private set; }
+    public int Production { get; private set; } //Nombre de semis récoltés après la récolte d'une plante
+    public int NbrMoisDeCroissance { get; private set; } = 0;
     public int NbrMoisAvantFloraison { get; private set; } //Nombre de mois nécessaires jusqu’à ce que la plante fleurisse
     public int NbrMoisMaladeConsecutif { get; set; } = 0; //Nombre de mois écoulés depuis la contamination de la plante
     public int NbrMoisAvecMauvaisesHerbesConsecutif { get; set; } = 0;
@@ -17,12 +17,12 @@ public abstract class Plante
 
     //-------------  ETAT DE LA PLANTE (BOOLEEN)
     public bool EstMalade { get; set; } = false;
-    public bool EstMorte { get; set; } = false;
-    public bool EstSemee { get; set; } = false;
-    public bool EstArrosee { get; set; } = false;
-    public bool EstDesherbee { get; set; } = false; //Retrait des mauvaises herbes
-    public bool EstEntoureeParMauvaisesHerbes { get; set; } = false;
-    public bool AGrandi { get; set; } = false;
+    public bool EstMorte { get; set;  } = false;
+    public bool EstSemee { get; private set; } = false;
+    public bool EstArrosee { get; private set; } = false;
+    public bool EstDesherbee { get; private set; } = false; //Retrait des mauvaises herbes
+    public bool EstEntoureeParMauvaisesHerbes { get;  set; } = false;
+    public bool AGrandi { get; private set; } = false;
     public bool EstRecoltable
     //La plante est récoltable que le temps de croissance (un certain nombre de mois) est supérieur ou égale
     //au nombre de mois nécessaires jusqu’à ce que la plante fleurisse 
@@ -37,6 +37,7 @@ public abstract class Plante
         set { }
 
     }
+
 
     public Plante(string nom, string nature, string solPref, string besoinEau, double temperaturePreferemin,
     double temperaturePreferemax, int production, int nbrMoisAvantFloraison, double prixUnitaireDeLaPlante)
