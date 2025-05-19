@@ -10,9 +10,7 @@ public class PlanteAcidulee : Plante
         production: 3,
         nbrMoisAvantFloraison: 6,
         prixUnitaireDeLaPlante: 10)
-    {
-        Nom = nom;
-    }
+    { }
     public override Plante Cloner()
     {
         return new PlanteAcidulee(Nom!);

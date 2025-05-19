@@ -197,7 +197,6 @@ public class Terrain
                 if (plante != null && !plante.EstMorte && plante.EstSemee)
                 {
                     bool conditionsDefavorables = plante.Croissance(typeSol, humiditeTerrain, temperatureActuelle, Meteo, meteoActuelle); // Appelle la méthode de croissance de Plante.cs
-                    Console.WriteLine(conditionsDefavorables);
                     if (conditionsDefavorables && !messageAffiche)// Si les conditions sont défavorables
                     {
                         Console.WriteLine(" Vos plantes vont mourir à cause de conditions défavorables... 😔");
@@ -234,7 +233,6 @@ public class Terrain
                         {
                             Plantes[x][y] = plante.Cloner();
                             Plantes[x][y]!.Semer(); //Utilisation de la méthode issue de Plante.cs pour l'état de la plante
-
                             // Ajustement du nombre de plantes présentes sur le terrain et du stock
                             NbPlantes++;
                             StockTotalDeSemis--;
@@ -266,7 +264,7 @@ public class Terrain
             Console.WriteLine("  🧑‍🌾 Vous avez semé votre terrain !\n");
         }
 
-        return false; // Retourne false, le terrain est plein
+        return true; // Retourne false, le terrain est plein
     }
 
     public bool Arroser() // Arrose toutes les plantes si elles sont semées sur le terrain.

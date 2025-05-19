@@ -10,12 +10,10 @@ public class PlanteSucree : Plante
         production: 5,
         nbrMoisAvantFloraison: 4,
         prixUnitaireDeLaPlante: 8)
-    {
-        Nom = nom;
-    }
+    { }
     public override Plante Cloner()
     {
-        return new PlanteAcidulee(Nom!);
+        return new PlanteSucree(Nom!);
     }
     public override void ApparaitreMauvaiseHerbe()
     {

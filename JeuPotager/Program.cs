@@ -301,7 +301,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie) && (!terrainVide
     terrain!.MiseAJourMeteo(nouvelleMeteo);
     terrainVideEtPlusDeSemis = terrain.VerifierFinDePartie();//On verifie que le terrain n'est pas vide et sans stock de semis
 
-    Console.Clear();
+    /* Console.Clear(); */
     for (int i = 0; i < moisSuivant.Length; i++)
     {
         Console.Write(moisSuivant[i]);
@@ -310,7 +310,6 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie) && (!terrainVide
     Console.WriteLine();
     Console.WriteLine($"                   Mois numéro : {compteurMois} ! ");
     Console.WriteLine();
-
     AfficherInformationsMeteoSolde(terrain, nouvelleMeteo);
     terrain.UtiliserFonctionnalitesAleatoire(nouvelleMeteo);
     Console.WriteLine("Appuyez sur i pour avoir les informations sur votre terrain et vos plantes sinon appuyez sur Entrée pour continuer");

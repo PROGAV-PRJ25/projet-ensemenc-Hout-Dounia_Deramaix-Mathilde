@@ -124,7 +124,6 @@ public abstract class Plante
     {
         int totalConditions = 4;
         int nbrConditionsFavorablesValidees = 0; //Compteur de conditions favorables qui sont validées
-        Console.WriteLine($"{typeSol}={SolPrefere} ; {humiditeTerrain}={BesoinEau} ; {meteoActuelle} ; {TemperaturePrefereeMin}<{temperatureActuelle}<{TemperaturePrefereeMax}");
         if (SolPrefere == typeSol)
             nbrConditionsFavorablesValidees++;
 
