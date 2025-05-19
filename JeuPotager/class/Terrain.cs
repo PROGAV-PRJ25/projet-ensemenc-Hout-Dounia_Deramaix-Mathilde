@@ -264,7 +264,7 @@ public class Terrain
             Console.WriteLine("  🧑‍🌾 Vous avez semé votre terrain !\n");
         }
 
-        return true; // Retourne false, le terrain est plein
+        return auMoinsUneSemee; // Retourne true, le terrain est plein et semé au besoin
     }
 
     public bool Arroser() // Arrose toutes les plantes si elles sont semées sur le terrain.

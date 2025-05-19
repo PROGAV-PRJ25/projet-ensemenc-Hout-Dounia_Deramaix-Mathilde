@@ -53,7 +53,7 @@ public abstract class Plante
     }
 
     public abstract Plante Cloner(); // Méthode abstraite pour créer une copie indépendante d’une plante.
-                                     // Sinon toutes les plantes agissent de manière identique
+                                     // Sinon toutes les plantes agissent de manière identique.
 
 
 
