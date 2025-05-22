@@ -13,9 +13,4 @@ public class Pays
         Terrains.Add(terrain);
     }
 
-    ////////////////// On s'en sert pas, on retire ? c'était si plusieurs terrain mais n'apparait jamais dans le program.cs
-    public void RetirerTerrain(Terrain terrain) //Retire un terrain à la liste Terrains de Pays.cs
-    {
-        Terrains.Remove(terrain);
-    }
 }
