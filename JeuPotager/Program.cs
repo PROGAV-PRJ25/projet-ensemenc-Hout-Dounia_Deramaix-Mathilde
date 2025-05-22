@@ -301,7 +301,7 @@ while ((!terrain.EstRecouvertDePlantesMortes) && (!partiefinie) && (!terrainVide
     terrain!.MiseAJourMeteo(nouvelleMeteo);
     terrainVideEtPlusDeSemis = terrain.VerifierFinDePartie();//On verifie que le terrain n'est pas vide et sans stock de semis
 
-    /* Console.Clear(); */
+    Console.Clear();
     for (int i = 0; i < moisSuivant.Length; i++)
     {
         Console.Write(moisSuivant[i]);
