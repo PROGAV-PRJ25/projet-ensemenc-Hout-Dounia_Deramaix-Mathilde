@@ -1,6 +1,6 @@
 public class Terrain
 {
-    public string? Nom { get;  set; }
+    public string? Nom { get; set; }
     public double Superficie { get; private set; }
     public int LongueurTerrain { get; private set; }
     public int LargeurTerrain { get; private set; }

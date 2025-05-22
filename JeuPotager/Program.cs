@@ -31,7 +31,7 @@ string[] autrePays = {
     "|                #                |",
     "|                                 |",
     "|                *                |",
-    "|           2. Bientôt            |",
+    "|           2. Bientôt 🚧 🔨      |",
     "|_________________________________|",
 };
 
@@ -263,11 +263,11 @@ if (toucheTerrain.KeyChar == '1')
 }
 else if (toucheTerrain.KeyChar == '2')
 {
-    terrain = TerrainFactory.CreerTerrainSucre("Dragibus", meteo);//Création de Terrain Sucré
+    terrain = TerrainFactory.CreerTerrainSucre("dragibus", meteo);//Création de Terrain Sucré
     meteo = new Meteo(compteurMois, terrain); //Création de météo
     terrain.Meteo = meteo;//Mise à jour de la météo pour terrain sucré
     pays.AjouterTerrain(terrain);
-    planteUtilisee = PlanteFactory.CreerPlanteSucree("Dragibus");//Création de Plante sucrée
+    planteUtilisee = PlanteFactory.CreerPlanteSucree("dragibus");//Création de Plante sucrée
     Console.WriteLine($"🚜 Vous avez choisi le terrain sucré! \n");
 }
 Console.WriteLine("     Appuyez sur Entrée pour commencer la partie !");
